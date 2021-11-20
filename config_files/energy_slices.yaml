@@ -1,0 +1,14 @@
+# Input file for 'BP-energy_slices.py' component
+#==================INPUT=========================
+---
+ENERGY_SLICES :
+                   identifier : "sto_01"
+                   sqrt_kgrid_numbers : 300
+                   kbox_factor : 0.5
+                   kbox_shift : [0.0,0.0]
+                   win_energy_calc : 0.04
+                   batches : 100
+                   energy_cut : 0.0
+                   outfile : "default"
+...
+
