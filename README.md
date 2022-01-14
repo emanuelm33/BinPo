@@ -1,6 +1,6 @@
 ## BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
 
-##### Version 1.0
+### Version 1.0
 
 BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
 systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite  
@@ -13,7 +13,7 @@ ease-of-use and efficiency in order to produce realistic simulations at low comp
 customized figures can be obtained from the simulations. To see details of the methodology applied, please refer to 
 our manuscript. To know how to use this code, please see "Usage" section below.
 
-##### Prerequisites
+### Prerequisites
 
 You will need to have installed a version 3.x of Python. If you don't have it, please, refer to the official Python 
 website https://www.python.org/. Along with Python 3.x you will need the following libraries:
@@ -27,7 +27,7 @@ We recommend to install a Python scientific distribution like Anaconda (https://
 which the modules above mentioned are already included. Additionally, you will have to install the Atomic Simulation
 Enviroment (ASE) library, version >= 3.2 (https://wiki.fysik.dtu.dk/ase/).
 
-##### Features
+### Features
 
 Currently, BinPo can be used for 2DES formed on the (100), (110) and (111) faces of:
 * strontium titanate, STO
@@ -44,18 +44,18 @@ BinPo allows for computing the following properties:
 Furthermore, you can analyze the simulations results by Matplotlib interactive plots and generate customized high
 quality plots for publishing.
 
-##### License
+### License
 
 BinPo is Copyrighted by (C) 2021 BinPo Team. This code is distributed under the terms of the GNU General Public 
 License v3 (GPLv3), see ~/COPYING file or http://www.gnu.org/copyleft/gpl.txt. So that, you are free to use, modify,
 improve and redistribute it.
 
-##### Contact and help
+### Contact and help
 
 For reporting bugs or asking questions about the code, please write to the following email: emanuelm@ucm.es.
 Request for adding features will be welcomed but without guarantees of future implementations.
 
-##### What does each file/folder mean?
+### What does each file/folder mean?
 
 * WFolder:         This folder holds the initial Wannier90 output files (W90 files). These files come from a 
                    DFT calculation + Wannier interpolation, and can be seen as the real space 
@@ -113,7 +113,7 @@ Request for adding features will be welcomed but without guarantees of future im
 * README.md:       This file.
 
 
-##### Usage
+### Usage
 
 To see the usage and updatable parameters from command-line, please type:
      $ python BP-component.py -h
@@ -123,7 +123,7 @@ If a parameter is ommited, its value will be taken by default from the correspon
 In the following lines you will find a short description of how to use BinPo. For further details you can take a
 look at ~/BPexamples folder. 
 
-#####    STEP 1: pre-processing step:
+###    STEP 1: pre-processing step:
 
 Run "BP-preproc.py". This component has two mandatory arguments: material (mt) and confinement direction (cfd). Choose the combination you want,
 for example, STO and 111, as follows:
@@ -136,7 +136,7 @@ filtering of r-space Hamiltonian, discretized along normal direction according t
 			
 NOTE: It should be noticed that you need to execute this step just once for each W90 file/material/direction combination.
 
-#####    STEP 2: SC-potential calculation:
+###    STEP 2: SC-potential calculation:
 		
 Run "BP-scp.py" component with a defined job identifier (id) as: 
 
@@ -149,7 +149,7 @@ calculation. You can quickly check the output file by means of "BP-fast_plot.py"
      
 	 $ python BP-fast_plot.py -id identifier
 				
-#####    STEP 3: post-processing step:
+###    STEP 3: post-processing step:
 
 NOTE: Each of the post-processing components needs a previous SC-potential calculation whose solution will be accessed by the specific 
 identifier.
@@ -161,7 +161,7 @@ the ommited parameters will be taken from ~/conf_files/bands.yaml file.
 
 	$ python BP-bands.py -id identifier -ph KGK
 
-##### Further information:
+### Further information:
 
 * For learning about the differents option to edit plots (colors, colormaps, formats, etc.), check the Matplotlib documentation
   at https://matplotlib.org/.
