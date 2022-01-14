@@ -167,4 +167,3 @@ the ommited parameters will be taken from ~/conf_files/bands.yaml file.
   at https://matplotlib.org/.
 * For general information about .yaml files, visit https://yaml.org/.
 
-
