@@ -42,8 +42,13 @@
     name the key as 'STO1' or something like this. Otherwise you will obtain an error by 
     repeating keys in the main dictionary 'materials'.
 """
-__version__ = "1.0"
+
 __author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 
 materials = { 'STO' : {'description' : 'cubic SrTiO3',
                        'XC-functional' : 'PBE',

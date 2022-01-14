@@ -24,6 +24,12 @@
      BP-energy_plot.py plots the output of BP-energy_slices.py component.
 """
 
+__author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 import numpy as np
 import matplotlib.pyplot as plt
 import BPmodule as BPM

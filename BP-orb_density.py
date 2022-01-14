@@ -23,6 +23,13 @@ BP-orb_density.py is part of BinPo.
      BP-orb_density.py component allows for decomposing and plotting the 
      electron density according to the orbital character.
 """
+
+__author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.linalg as LA

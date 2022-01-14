@@ -2,18 +2,18 @@
 #==================INPUT=========================
 ---
 SCP_CALCULATION:
-                   identifier : "stoNk16"
+                   identifier : "run1"
                    material : "STO"
                    crystal_face : "010"
                    number_of_planes : 40                 
                    shift_from_LUL : 0.008
-                   BC1_topmost_layer : -0.36
+                   BC1_topmost_layer : -0.41
                    BC2_in_bulk : 0.0
                    Neumann_at_bulk : no
-                   sqrt_kgrid_numbers : 16
+                   sqrt_kgrid_numbers : 26
                    k_shift :  [0.001, 0.001]
                    temperature : 10
-                   mixing_factor : 0.07
+                   mixing_factor : 0.09
                    permittivity_model : "Cop"  # See below 
                    potential_live_visualization : yes
                    error_live_visualization : no

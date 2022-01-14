@@ -25,6 +25,12 @@
      the self-consistent potential of the system.
 """
 
+__author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 import os
 import numpy as np
 import matplotlib.pyplot as plt
@@ -50,7 +56,7 @@ epilog = "By default, arguments not specified are taken from './config_files/scp
  
 msj_id = "Identifier for the calculation. String. It is unique and can be recalled later in post-processing."
 msj_mat = "Name of the material. String. It could be 'STO' or 'KTO'."
-msj_fc = "Crystal face 'hkl'. String. Allowed values: '100' ('010','001'), '110' ('011','101'), '111'."
+msj_fc = "Confinement direction 'hkl'. String. Allowed values: '100' ('010','001'), '110' ('011','101'), '111'."
 msj_T = "Temperature in K. Float. Allowed range: [0.001, 315.0]"
 msj_L = "Number of planes stacked along normal direction. Integer. Allowed range: [10, 200]."
 msj_Nk = "Square root of the total number of points in 2D k-grid. Integer. It must be > 10."
@@ -64,10 +70,10 @@ msj_mf = "Mixing factor for the over-relaxation mixing method. Float. Tipically 
 # Passing arguments by terminal and setting their default values
 parser = argparse.ArgumentParser(description = description, epilog = epilog)
 parser.add_argument('-id', default = data['SCP_CALCULATION']['identifier'], type = str, help = msj_id)
-parser.add_argument('-m', default = data['SCP_CALCULATION']['material'], type = str, help = msj_mat)
-parser.add_argument('-fc', default = data['SCP_CALCULATION']['crystal_face'], type = str, help = msj_fc)
-parser.add_argument('-t', default = data['SCP_CALCULATION']['temperature'], type = float, help = msj_T)
-parser.add_argument('-l', default = data['SCP_CALCULATION']['number_of_planes'], type = int, help = msj_L)
+parser.add_argument('-mt', default = data['SCP_CALCULATION']['material'], type = str, help = msj_mat)
+parser.add_argument('-cfd', default = data['SCP_CALCULATION']['crystal_face'], type = str, help = msj_fc)
+parser.add_argument('-te', default = data['SCP_CALCULATION']['temperature'], type = float, help = msj_T)
+parser.add_argument('-tl', default = data['SCP_CALCULATION']['number_of_planes'], type = int, help = msj_L)
 parser.add_argument('-nk', default = data['SCP_CALCULATION']['sqrt_kgrid_numbers'], type = int, help = msj_Nk)
 parser.add_argument('-bc1', default = data['SCP_CALCULATION']['BC1_topmost_layer'], type = float, help = msj_BC1)
 parser.add_argument('-bc2', default = data['SCP_CALCULATION']['BC2_in_bulk'], type = float, help = msj_BC2)
@@ -105,10 +111,10 @@ def printlog(text, level = 'i'): # Simple function for general logging
 #--------------------------------------------------------------------------------------------------------------------------
 # Copying the rest of parameters updatable by terminal
 #--------------------------------------------------------------------------------------------------------------------------
-material = args.m # material
-face_in = args.fc # crystal face
-T = args.t # temperature in K
-L = args.l # number of planes
+material = (args.mt).upper() # uppercase the material name
+face_in = args.cfd # crystal face
+T = args.te # temperature in K
+L = args.tl # number of planes
 Nk = args.nk # (total number of kpoints = Nk*Nk)
 bc1 = args.bc1 # boundary condition at z = 0 (i.e. at the top-most layer)
 bc2 = args.bc2 # boundary condition at z = L-1 (i. e. bulk)

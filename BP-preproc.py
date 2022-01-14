@@ -29,6 +29,13 @@
      This component does not log the information and need two mandatory input
      through the terminal: the material and the crystal face.
 """
+
+__author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 import os
 import numpy as np
 import time as t
@@ -38,25 +45,25 @@ import BPdatabase as BPD
 
 #--------------------------------------------------------------------------------------------------------------------------
 # Messages to print by terminal when checking the description with -h or --help command
-description = "PREPROCESSING STEP. The Wannier file is taken from 'WannFolder' and a new folder containing"\
+description = "PREPROCESSING STEP. The Wannier file (W90 file) is taken from 'WannFolder' and a new folder containing"\
     " the elements of r-space Hamiltonian separated by planes is generated."
-epilog = "In principle, this component should be executed once per crystal face. After running it"\
-    " the user can perform any SC-potential calculation associated to the specific Wannier file."
-msj_fc = "Crystal face. This argument is mandatory. String. It could be either '100' ('010', '001') or '110' ('011', '101') or '111'."
+epilog = "In principle, this component should be executed once per confinement direction (crystal face). After running it"\
+    " the user can perform any SC-potential calculation associated to the W90 file/material/direction combination."
+msj_fc = "Confinement direction 'hkl'. This argument is mandatory. String. It could be either '100' ('010', '001') or '110' ('011', '101') or '111'."
 msj_mat = "Name of the material. This argument is mandatory. String. It could be 'STO' or 'KTO'."
 #--------------------------------------------------------------------------------------------------------------------------
 # Passing mandatory arguments by terminal
 parser = argparse.ArgumentParser(description = description, epilog = epilog)
 req_name = parser.add_argument_group('required argument')
-req_name.add_argument('-m', type = str, help = msj_mat, required = True)
-req_name.add_argument('-fc', type = str, help = msj_fc, required = True)
+req_name.add_argument('-mt', type = str, help = msj_mat, required = True)
+req_name.add_argument('-cfd', type = str, help = msj_fc, required = True)
 args = parser.parse_args()
 #--------------------------------------------------------------------------------------------------------------------------
 # Loading the values
-material = args.m
+material = (args.mt).upper() # uppercase the material name
 if material != 'KTO' and material != 'STO':
     raise ValueError('%s is an invalid material!')
-face = args.fc
+face = args.cfd
 #--------------------------------------------------------------------------------------------------------------------------
 filename = BPD.materials[material]['Wannier_file'] # open the Wannier file
 F001 = np.loadtxt('./WFolder/'+ filename, skiprows = BPD.materials[material]['skip_rows'])

@@ -1,8 +1,6 @@
-# BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
-================================================================
+## BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
 
-# Version 1.0
------------------------------------------------------------------------------------------------------------------------
+##### Version 1.0
 
 BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
 systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite  
@@ -15,22 +13,22 @@ ease-of-use and efficiency in order to produce realistic simulations at low comp
 customized figures can be obtained from the simulations. To see details of the methodology applied, please refer to 
 our manuscript. To know how to use this code, please see "Usage" section below.
 
-# Prerequisites
------------------------------------------------------------------------------------------------------------------------
+##### Prerequisites
+
 You will need to have installed a version 3.x of Python. If you don't have it, please, refer to the official Python 
 website https://www.python.org/. Along with Python 3.x you will need the following libraries:
 
-* NumPy (https://numpy.org/)
-* SciPy (https://www.scipy.org/)
-* Matplotlib (https://matplotlib.org/)
-* NumExpr (https://numexpr.readthedocs.io/projects/NumExpr3/en/latest/)
+* NumPy >= 1.19 (https://numpy.org/)
+* SciPy >= 1.5 (https://www.scipy.org/)
+* Matplotlib >= 3.3 (https://matplotlib.org/)
+* NumExpr >= 2.7 (https://numexpr.readthedocs.io/projects/NumExpr3/en/latest/)
 
 We recommend to install a Python scientific distribution like Anaconda (https://www.anaconda.com/) or another one, in 
 which the modules above mentioned are already included. Additionally, you will have to install the Atomic Simulation
-Enviroment (ASE) library (https://wiki.fysik.dtu.dk/ase/).
+Enviroment (ASE) library, version >= 3.2 (https://wiki.fysik.dtu.dk/ase/).
 
-# Features
------------------------------------------------------------------------------------------------------------------------
+##### Features
+
 Currently, BinPo can be used for 2DES formed on the (100), (110) and (111) faces of:
 * strontium titanate, STO
 * potassium tantalate, KTO
@@ -46,19 +44,19 @@ BinPo allows for computing the following properties:
 Furthermore, you can analyze the simulations results by Matplotlib interactive plots and generate customized high
 quality plots for publishing.
 
-# License
------------------------------------------------------------------------------------------------------------------------
+##### License
+
 BinPo is Copyrighted by (C) 2021 BinPo Team. This code is distributed under the terms of the GNU General Public 
 License v3 (GPLv3), see ~/COPYING file or http://www.gnu.org/copyleft/gpl.txt. So that, you are free to use, modify,
 improve and redistribute it.
 
-# Contact and help
------------------------------------------------------------------------------------------------------------------------
+##### Contact and help
+
 For reporting bugs or asking questions about the code, please write to the following email: emanuelm@ucm.es.
 Request for adding features will be welcomed but without guarantees of future implementations.
 
-# What does each file/folder mean?
------------------------------------------------------------------------------------------------------------------------
+##### What does each file/folder mean?
+
 * WFolder:         This folder holds the initial Wannier90 output files (W90 files). These files come from a 
                    DFT calculation + Wannier interpolation, and can be seen as the real space 
                    Hamiltonian of the bulk unit cell. There is a specific file for each material,
@@ -86,7 +84,6 @@ Request for adding features will be welcomed but without guarantees of future im
 				
 * BP-fast_plot.py: Quick plotter for the output of "BP-scp.py".
 
-# ---------------- post-processing components ---------------- 
 * BP-bands.py:     Bandstructure calculator component. Bands calculation can include orbital character and/or bands 
 		   projections onto planes. You can pass the identifier for band calculation by terminal, and many 
 		   other parameters. Parameters not set will be taken from ~/conf_files/bands.yaml
@@ -110,15 +107,14 @@ Request for adding features will be welcomed but without guarantees of future im
 	           Orbital decomposition of electron density. It allows for decomposing and plotting the electron density 
 	           according to the orbital character. Parameters not passed through the terminal will be set by default
 	           from ~/conf_files/orb_density.yaml.
---------------------------------------------------------------
 
 * COPYING.md:      GPLv3 license file.
 
 * README.md:       This file.
 
 
-# Usage
------------------------------------------------------------------------------------------------------------------------
+##### Usage
+
 To see the usage and updatable parameters from command-line, please type:
      $ python BP-component.py -h
 where BP-component.py is any BinPo component. A list of the more frequently adjustable parameters will appear.
@@ -127,8 +123,8 @@ If a parameter is ommited, its value will be taken by default from the correspon
 In the following lines you will find a short description of how to use BinPo. For further details you can take a
 look at ~/examples folder. 
 
-#    STEP 1: pre-processing step:
----------------------------------
+#####    STEP 1: pre-processing step:
+
 Run "BP-preproc.py". This component has two mandatory arguments: material (m) and face (fc). Choose the combination you want,
 for example, STO and 111, as follows:
 
@@ -140,8 +136,8 @@ you will find the folder ~/HrSTO111 after a succesful pre-processing.
 			
 NOTE: It should be noticed that you need to execute this step just once for each MATERIAL/FACE/W90_FILE combination.
 
-#    STEP 2: SC-potential calculation:
---------------------------------------		
+#####    STEP 2: SC-potential calculation:
+		
 Run "BP-scp.py" component with a defined job identifier (id) as: 
 
 	$ python BP-scp.py -id identifier
@@ -153,20 +149,20 @@ calculation. You can quickly check the output file by means of "BP-fast_plot.py"
      
 	 $ python BP-Vplot.py -id identifier
 				
-#    STEP 3: post-processing step:
-----------------------------------
+#####    STEP 3: post-processing step:
+
 NOTE: Each of the post-processing components needs a previous SC-potential calculation whose solution will be accessed by the specific 
 identifier.
 
 Recall the SC solutions and their features from any of the post-processing components (BP-bands.py, 
 BP-energy_slices.py, etc.). Check the parameters needed in each particular case. All new runs will be automatically logged in the 
-file ~/identifier/identifier.log. For example, to compute the bandstructure along KGK path (ph), run: 
+file ~/identifier/identifier.log. For example, to compute the bandstructure along KGK path (ph), run the line below. In this case, 
+the ommited parameters will be taken from ~/conf_files/bands.yaml file.
 
 	$ python BP-bands.py -id identifier -ph KGK
 
-In this case, the ommited parameters will be taken from ~/conf_files/bands.yaml file.
------------------------------------------------------------------------------------------------------------------------
-# Further information:
+##### Further information:
+
 * For learning about the differents option to edit plots (colors, colormaps, formats, etc.), check the Matplotlib documentation
   at https://matplotlib.org/.
 * For general information about .yaml files, visit https://yaml.org/.

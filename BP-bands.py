@@ -24,6 +24,13 @@
      BP-bands.py component computes the band structure for a 2DES along a
      selected path between high symmetry points in the IBZ1.
 """
+
+__author__ = "Emanuel A. Martinez"
+__email__ = "emanuelm@ucm.es"
+__copyright__ = "Copyright (C) 2021 BinPo Team"
+__version__ = 1.0
+__date__ = "January 14, 2022"
+
 import numpy as np
 import matplotlib.pyplot as plt
 import matplotlib.patches as pth
@@ -82,7 +89,7 @@ TBP = np.loadtxt(identifier + '/' + identifier + '_SCP.dat')
 # Copying the rest of the parameters updatable by terminal
 band_task = args.tk
 k_points = args.kp
-str_path = args.ph
+str_path = (args.ph).upper() # uppercase the path
 N_BANDS = args.nb
 plane1 = args.pi # initial plane considered in projection
 plane2 = args.pf # final plane considered in projection
@@ -286,7 +293,8 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
         im = ax.scatter(pathAxis[0]-xshift, TBP.T[i]-F_LEVEL, marker = 'o', s = ps, c = TBP1.T[i], cmap = c_map, norm = Normalize(0,1), zorder = 10)
         if save_data == True:
             Lout.append(TBP.T[i]-F_LEVEL)
-            Lout.append(TBP1.T[i]-F_LEVEL)
+            # Lout.append(TBP1.T[i]-F_LEVEL) # bug detected!!
+            Lout.append(TBP1.T[i])
     cax = fig3.add_axes(locbar) 
     clb = fig3.colorbar(im, ax=ax, cax = cax, ticks = [0.0,1.0])
     clb.ax.set_yticklabels(textbar, size = font_size, color = font_color, fontweight = 'bold')
