@@ -121,20 +121,20 @@ where BP-component.py is any BinPo component. A list of the more frequently adju
 If a parameter is ommited, its value will be taken by default from the corresponding configuration file.
 
 In the following lines you will find a short description of how to use BinPo. For further details you can take a
-look at ~/examples folder. 
+look at ~/BPexamples folder. 
 
 #####    STEP 1: pre-processing step:
 
-Run "BP-preproc.py". This component has two mandatory arguments: material (m) and face (fc). Choose the combination you want,
+Run "BP-preproc.py". This component has two mandatory arguments: material (mt) and confinement direction (cfd). Choose the combination you want,
 for example, STO and 111, as follows:
 
-	$ python BP-preproc.py -m STO -fc 111
+	$ python BP-preproc.py -mt STO -cfd 111
 
-It will generate a folder, named as "Hr" + "material" + "face", that holds the files corresponding to the rearrangment and
-filtering of r-space Hamiltonian, discretized along normal direction according to the number of planes. In this short example,
-you will find the folder ~/HrSTO111 after a succesful pre-processing.
+It will generate a folder, named as "Hr" + "material" + "direction", that holds the files corresponding to the rearrangment and
+filtering of r-space Hamiltonian, discretized along normal direction according to the number of planes. You will find the folder
+ ~/HrSTO111 after a succesful pre-processing.
 			
-NOTE: It should be noticed that you need to execute this step just once for each MATERIAL/FACE/W90_FILE combination.
+NOTE: It should be noticed that you need to execute this step just once for each W90 file/material/direction combination.
 
 #####    STEP 2: SC-potential calculation:
 		
@@ -147,7 +147,7 @@ The identifier will be unique for this calculation and can be recall later in an
 you will obtain an output folder holding the SC solution, a .log file and a .yaml file with a dictionary of parameters used in the 
 calculation. You can quickly check the output file by means of "BP-fast_plot.py" as:
      
-	 $ python BP-Vplot.py -id identifier
+	 $ python BP-fast_plot.py -id identifier
 				
 #####    STEP 3: post-processing step:
 
