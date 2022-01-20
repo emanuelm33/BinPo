@@ -15,8 +15,8 @@ ENVELOPE_WAVEFUNCTIONS:
                                        color_V : "k"
                                        color_wfs : "teal"
                                        alpha : 0.3
-                                       title : ""
-                                       title_size : 12
+                                       title : "Envelope wavefunctions"
+                                       title_size : 14
                    LABELS :
                                        xlabel : 'planes'
                                        xfontsize : 16

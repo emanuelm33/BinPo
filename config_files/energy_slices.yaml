@@ -3,8 +3,8 @@
 ---
 ENERGY_SLICES :
                    identifier : "sto_01"
-                   sqrt_kgrid_numbers : 300
-                   kbox_factor : 0.5
+                   sqrt_kgrid_numbers : 400
+                   kbox_factor : 0.6
                    kbox_shift : [0.0,0.0]
                    win_energy_calc : 0.04
                    batches : 100

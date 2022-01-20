@@ -2,15 +2,15 @@
 #==================INPUT=========================
 ---
 SCP_CALCULATION:
-                   identifier : "run1"
+                   identifier : "sto01"
                    material : "STO"
-                   crystal_face : "010"
+                   crystal_face : "100"
                    number_of_planes : 40                 
                    shift_from_LUL : 0.008
-                   BC1_topmost_layer : -0.41
+                   BC1_topmost_layer : -0.3
                    BC2_in_bulk : 0.0
                    Neumann_at_bulk : no
-                   sqrt_kgrid_numbers : 26
+                   sqrt_kgrid_numbers : 36
                    k_shift :  [0.001, 0.001]
                    temperature : 10
                    mixing_factor : 0.09

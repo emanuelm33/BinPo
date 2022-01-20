@@ -29,7 +29,7 @@ __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
 __version__ = 1.0
-__date__ = "January 14, 2022"
+__date__ = "January 20, 2022"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -181,10 +181,10 @@ def Band_Plotter(bandout, pathAxis, data1):
     
     if save_data == True:
         printlog('Saving file...')
-        np.savetxt(identifier + '/' + identifier + '_bands.dat', np.array(Lout).T)
+        np.savetxt(identifier + '/' + identifier + '_bands_' + str_path + '.dat', np.array(Lout).T)
     if save_plot == True:
         printlog('Saving plot...')
-        plt.savefig(identifier + '/' + identifier + '_bands' + pformat, dpi = resol)
+        plt.savefig(identifier + '/' + identifier + '_bands_' + str_path + pformat, dpi = resol)
     fig1.show()  
 
 #--------------------------------------------------------------------------------------------------------------------------
@@ -227,9 +227,9 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
         ax.scatter(pathAxis[0]-xshift, TBP.T[j]-F_LEVEL, marker = 'o', s = ps, color = colors_list, zorder = 10)
         if save_data == True:
             Lout.append(TBP.T[j]-F_LEVEL)
-            Lout.append(TBPc1.T[j]-F_LEVEL)
-            Lout.append(TBPc2.T[j]-F_LEVEL)
-            Lout.append(TBPc3.T[j]-F_LEVEL)
+            Lout.append(TBPc1.T[j])
+            Lout.append(TBPc2.T[j])
+            Lout.append(TBPc3.T[j])
     ax.set_xlabel(xlabel, size = xfontsize)
     ax.set_ylabel(ylabel, size = yfontsize)
     ax.set_xlim(XY_LIM2[0], XY_LIM2[1])
@@ -248,10 +248,10 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
         printlog('There was a problem with Maxwell triangle to label the colors. Matplotlib patches were used instead!\n', level = 'w')
     if save_data == True:
         printlog('Saving file...')
-        np.savetxt(identifier + '/' + identifier + '_bands_orbchar.dat', np.array(Lout).T)
+        np.savetxt(identifier + '/' + identifier + '_bands_orbchar_' + str_path + '.dat', np.array(Lout).T)
     if save_plot == True:
         printlog('Saving plot...')
-        plt.savefig(identifier + '/' + identifier + '_bands_orbchar' + pformat, dpi = resol)
+        plt.savefig(identifier + '/' + identifier + '_bands_orbchar_' + str_path + pformat, dpi = resol)
     fig2.show()        
 #--------------------------------------------------------------------------------------------------------------------------
 # mapcolor for projections onto the B-planes
@@ -313,10 +313,10 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
         ax.set_title(ptitle, fontsize = ptitle_size)
     if save_data == True:
         printlog('Saving file...')
-        np.savetxt(identifier + '/' + identifier + '_bands_planeproj.dat', np.array(Lout).T)
+        np.savetxt(identifier + '/' + identifier + '_bands_planeproj_' + str_path + '.dat', np.array(Lout).T)
     if save_plot == True:
         printlog('Saving plot...')
-        plt.savefig(identifier + '/' + identifier + '_bands_planeproj' + pformat, dpi = resol)
+        plt.savefig(identifier + '/' + identifier + '_bands_planeproj_' + str_path + pformat, dpi = resol)
     fig3.show()        
 
 # MAIN
@@ -475,7 +475,7 @@ if band_task == 1:
            
 if band_task == 2:
     printlog('\n')
-    printlog('Band structure calculation with projections onto B-planes...')
+    printlog('Band structure calculation with projections onto planes...')
     result2 = BPM.PlaneProjector(HK, V.to_tensor(), L, plane1, plane2, N_BANDS)
     PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
     printlog('Done!')
