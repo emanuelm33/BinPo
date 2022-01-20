@@ -2,7 +2,7 @@
 
 ### Version 1.0
 
-<div style="text-align: justify">BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
+BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
 systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite  
 complex oxides, like strontium titanate (STO), in the main crystal faces. BinPo solves the Schrödinger-Poisson 
 scheme to obtain the self-consistent potential energy along the slab. The tight-binding Hamiltonian for this slab 
@@ -11,7 +11,7 @@ consistent (SC) solution is found, properties like projected bandstructure and F
 of electron density and envelope wavefunctions can be computed in post-processing steps. BinPo gives priority to 
 ease-of-use and efficiency in order to produce realistic simulations at low computational cost. High quality and 
 customized figures can be obtained from the simulations. To see details of the methodology applied, please refer to 
-our manuscript. To know how to use this code, please see "Usage" section below.</div>
+our manuscript. To know how to use this code, please see "Usage" section below.
 
 ### Prerequisites
 
