@@ -29,7 +29,7 @@ ENERGY_PLOTTER :
                                        fontsize : 16
                    SAVING :
                                        save_plot : yes
-                                       format : ".pdf"
-                                       dpi : 500                                       
+                                       format : ".png"
+                                       dpi : 300                                       
 ...                                       
 

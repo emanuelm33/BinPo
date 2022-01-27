@@ -8,7 +8,7 @@ BAND_STRUCTURE :
                    reference_kpoint : "G"              
                    Total_Hk_method : 'vectorized'
                    num_bands : 50
-                   bands_task : 0
+                   bands_task : 1
                    initial_plane : 0
                    final_plane : 5
                    
@@ -16,7 +16,7 @@ BAND_STRUCTURE :
                                        PLOT_ADJUST :
                                                        plotstyle : "default" 
                                                        xy_limits : &limxy [-0.5, 0.5, -0.33, 0.03]  #[x_min, x_max, y_min, y_max]  # The notation '&limxy' is to define repeated nodes
-                                                       linecolor : "navy"                                                                                                            # callable by '*limxy' in lines below. You can erase it
+                                                       linecolor : "darkred"                                                                                                            # callable by '*limxy' in lines below. You can erase it
                                                        linewidth : 1.5                                                                                                                  #  and set any list independently.
                                                        fig_size : [6,6]
                                                        axis_adjust : [0.22, 0.15, 0.9, 0.9] #[left, bottom, right, top]
@@ -33,8 +33,8 @@ BAND_STRUCTURE :
                                        SAVING : 
                                                        save_bands : no
                                                        save_plot : yes
-                                                       format : '.pdf'
-                                                       dpi : 500 
+                                                       format : '.png'
+                                                       dpi : 300 
 
                    ORBITAL_CHARACTER :
                                        PLOT_ADJUST :

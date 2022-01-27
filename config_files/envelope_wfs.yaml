@@ -28,7 +28,7 @@ ENVELOPE_WAVEFUNCTIONS:
                    SAVING :
                                        save_data : no
                                        save_plot : no
-                                       format : ".pdf"
-                                       dpi : 500
+                                       format : ".png"
+                                       dpi : 300
 ...
 

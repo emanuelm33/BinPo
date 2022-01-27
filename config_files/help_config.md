@@ -91,6 +91,8 @@ BAND_STRUCTURE:
    - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
    - title = String. Title for the figure. If title == "", it will be ignored.
    - title_size = Float. Fontsize for the figure title. Only if title != "".
+   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
 
   - LABELS: 
 -----------   
@@ -120,6 +122,8 @@ BAND_STRUCTURE:
    - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
    - title = String. Title for the figure. If title == "", it will be ignored.
    - title_size = Float. Fontsize for the figure title. Only if title != "".
+   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
              
   - COLOR_TRIANGLE:
 -------------------
@@ -157,6 +161,8 @@ BAND_STRUCTURE:
    - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
    - title = String. Title for the figure. If title == "", it will be ignored.
    - title_size = Float. Fontsize for the figure title. Only if title != "".
+   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
      
   - COLORBAR:
 -------------  
