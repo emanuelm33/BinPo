@@ -135,7 +135,7 @@ def EnvelopePlot(z_pl, pot_z, wfs_array, data4):
     legend_size = data4['LABELS']['legend_size']
     
     save_data = data4['SAVING']['save_data']
-    save_plot = data4['SAVING']['save_data']
+    save_plot = data4['SAVING']['save_plot']
     pformat = data4['SAVING']['format']
     resol = data4['SAVING']['dpi']
     
@@ -149,18 +149,18 @@ def EnvelopePlot(z_pl, pot_z, wfs_array, data4):
     ax.tick_params(labelsize = tick_size)
     if len(ptitle) > 0:
         ax.set_title(ptitle, fontsize = ptitle_size)
-        plt.subplots_adjust(left = l4, bottom = b4, right = r4, top = t4)
-        
-    ax.axhline(0,-2,L+1,color = 'r', ls = '-.', zorder = 250)
-    ax.plot(z_pl, pot_z, lw = lw_v, marker = 'o', ms = ms, color = c_v, zorder = 230, label = 'SC-potential')
+    
+    plt.subplots_adjust(left = l4, bottom = b4, right = r4, top = t4)    
+    ax.axhline(0,-2,L+1,color = 'r', ls = '-.', zorder = -40)
+    ax.plot(z_pl, pot_z, lw = lw_v, marker = 'o', ms = ms, color = c_v, zorder = -50, label = 'SC-potential')
     
     for n in range(N):
-        ax.plot(wfs_array[0], wfs_array[n+1], lw = lw_wfs, zorder = 200-2*n, alpha = ALPHA, color = c_wfs)
+        ax.plot(wfs_array[0], wfs_array[n+1], lw = lw_wfs, zorder = -5000+2*n, alpha = ALPHA, color = c_wfs)
 
     if use_legends == True:
         handles = [pth.Circle((0,10), 0.1, color = c_v), pth.Circle((0,10), 0.1, color = c_wfs)]
-        ax.legend(handles, ['SC-potential','envelope wfs'], loc = 'best', framealpha = 0.6, facecolor = 'w', fontsize = legend_size)
-       
+        ax.legend(handles, ['SC-potential','envelope wfs'], loc = 'best', framealpha = 0.8, facecolor = 'w', fontsize = legend_size)
+        
     if save_data == True:
         printlog('Saving data...')
         np.savetxt(identifier + '/' + identifier + '_env-wfs.dat', wfs_array)

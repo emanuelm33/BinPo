@@ -147,6 +147,8 @@ def Band_Plotter(bandout, pathAxis, data1):
     l1, b1, r1, t1 = data1['PLOT_ADJUST']['axis_adjust']
     ptitle = data1['PLOT_ADJUST']['title']
     ptitle_size = data1['PLOT_ADJUST']['title_size']
+    shadow = data1['PLOT_ADJUST']['shadow_above_Ef']
+    shadow_color= data1['PLOT_ADJUST']['shadow_color']
         
     xlabel = data1['LABELS']['xlabel']
     xfontsize = data1['LABELS']['xfontsize']
@@ -166,7 +168,7 @@ def Band_Plotter(bandout, pathAxis, data1):
     Lout = []
     Lout.append(pathAxis[0]-xshift)
     for i in range(N_BANDS):     
-        ax.plot(pathAxis[0]-xshift, bandout.T[i] - F_LEVEL, lw = lw, c = lc, zorder = 10)
+        ax.plot(pathAxis[0]-xshift, bandout.T[i] - F_LEVEL, lw = lw, c = lc, zorder = -30)
         if save_data == True:
             Lout.append(bandout.T[i] - F_LEVEL)
     ax.set_xlabel(xlabel, size = xfontsize)
@@ -175,10 +177,14 @@ def Band_Plotter(bandout, pathAxis, data1):
     ax.set_ylim(XY_LIM1[2], XY_LIM1[3])
     ax.tick_params(labelsize = tick_size)
     plt.subplots_adjust(left = l1, bottom = b1, right = r1, top = t1)
-    ax.hlines(0,-10,10, color = 'k', lw = 2, ls = '-.', zorder = 20)
+    ax.hlines(0,-10,10, color = 'k', lw = 2, ls = '-.', zorder = -10)
     if len(ptitle) > 0:
         ax.set_title(ptitle, fontsize = ptitle_size)
     
+    if shadow != 0.0:
+        rec = pth.Rectangle((XY_LIM1[0], 0.0), np.abs(XY_LIM1[1]-XY_LIM1[0]), XY_LIM1[3], color = shadow_color, alpha = shadow, zorder = -20)
+        ax.add_patch(rec)
+        
     if save_data == True:
         printlog('Saving file...')
         np.savetxt(identifier + '/' + identifier + '_bands_' + str_path + '.dat', np.array(Lout).T)
@@ -198,6 +204,8 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
     l2, b2, r2, t2 = data2['PLOT_ADJUST']['axis_adjust']
     ptitle = data2['PLOT_ADJUST']['title']
     ptitle_size = data2['PLOT_ADJUST']['title_size']
+    shadow = data2['PLOT_ADJUST']['shadow_above_Ef']
+    shadow_color = data2['PLOT_ADJUST']['shadow_color']
     
     relsize = data2['COLOR_TRIANGLE']['proportion']
     loc = data2['COLOR_TRIANGLE']['location']
@@ -224,7 +232,7 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
     for j in range(N_BANDS):
         colors = np.array([TBPc1.T[j],TBPc2.T[j],TBPc3.T[j]]).T.reshape(-1,3)
         colors_list = BPM.Gen_Colors(colors, c1, c2, c3, Norm = True)
-        ax.scatter(pathAxis[0]-xshift, TBP.T[j]-F_LEVEL, marker = 'o', s = ps, color = colors_list, zorder = 10)
+        ax.scatter(pathAxis[0]-xshift, TBP.T[j]-F_LEVEL, marker = 'o', s = ps, color = colors_list, zorder = -30)
         if save_data == True:
             Lout.append(TBP.T[j]-F_LEVEL)
             Lout.append(TBPc1.T[j])
@@ -236,7 +244,7 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
     ax.set_ylim(XY_LIM2[2], XY_LIM2[3])
     ax.tick_params(labelsize = tick_size)
     plt.subplots_adjust(left = l2, bottom = b2, right = r2, top = t2)
-    ax.hlines(0,-10,10, color = 'k', ls = '-.', zorder = 20)
+    ax.hlines(0,-10,10, color = 'k', ls = '-.', zorder = -10)
     if len(ptitle) > 0:
         ax.set_title(ptitle, fontsize = ptitle_size)
     #legends
@@ -246,6 +254,11 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
         handles = [pth.Circle((0,10), 0.1, color = c1), pth.Circle((0,10), 0.1, color = c2), pth.Circle((0,10), 0.1, color = c3)]
         ax.legend(handles, ['xy','yz','zx'], loc = 'best', framealpha = 0.6, facecolor = 'w', fontsize = 12)
         printlog('There was a problem with Maxwell triangle to label the colors. Matplotlib patches were used instead!\n', level = 'w')
+    
+    if shadow != 0.0:
+        rec = pth.Rectangle((XY_LIM1[0], 0.0), np.abs(XY_LIM1[1]-XY_LIM1[0]), XY_LIM1[3], color = shadow_color, alpha = shadow, zorder = -20)
+        ax.add_patch(rec)
+        
     if save_data == True:
         printlog('Saving file...')
         np.savetxt(identifier + '/' + identifier + '_bands_orbchar_' + str_path + '.dat', np.array(Lout).T)
@@ -266,6 +279,8 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
     l3, b3, r3, t3 = data3['PLOT_ADJUST']['axis_adjust']
     ptitle = data3['PLOT_ADJUST']['title']
     ptitle_size = data3['PLOT_ADJUST']['title_size']
+    shadow = data3['PLOT_ADJUST']['shadow_above_Ef']
+    shadow_color = data3['PLOT_ADJUST']['shadow_color']
     
     locbar = data3['COLORBAR']['location']
     textbar = data3['COLORBAR']['textbar']
@@ -290,7 +305,7 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
     Lout = []
     Lout.append(pathAxis[0]-xshift)
     for i in range(N_BANDS):     
-        im = ax.scatter(pathAxis[0]-xshift, TBP.T[i]-F_LEVEL, marker = 'o', s = ps, c = TBP1.T[i], cmap = c_map, norm = Normalize(0,1), zorder = 10)
+        im = ax.scatter(pathAxis[0]-xshift, TBP.T[i]-F_LEVEL, marker = 'o', s = ps, c = TBP1.T[i], cmap = c_map, norm = Normalize(0,1), zorder = -30)
         if save_data == True:
             Lout.append(TBP.T[i]-F_LEVEL)
             # Lout.append(TBP1.T[i]-F_LEVEL) # bug detected!!
@@ -308,7 +323,12 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
     ax.tick_params(labelsize = tick_size)
     ax.set_facecolor(back_color)
     plt.subplots_adjust(left = l3, bottom = b3, right = r3, top = t3)
-    ax.hlines(0,-10,10, color = 'w', ls = '-.', zorder = 20)
+    ax.hlines(0,-10,10, color = 'w', ls = '-.', zorder = -10)
+    
+    if shadow != 0.0:
+        rec = pth.Rectangle((XY_LIM1[0], 0.0), np.abs(XY_LIM1[1]-XY_LIM1[0]), XY_LIM1[3], color = shadow_color, alpha = shadow, zorder = -20)
+        ax.add_patch(rec)
+        
     if len(ptitle) > 0:
         ax.set_title(ptitle, fontsize = ptitle_size)
     if save_data == True:

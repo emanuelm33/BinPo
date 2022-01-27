@@ -81,13 +81,16 @@ TBP = np.loadtxt(identifier + '/' + identifier + '_SCP.dat')
 
 fig, (ax1,ax2) = plt.subplots(nrows= 2, ncols = 1, figsize = (6,6.5), sharex = 'all')
 
-ax1.set_ylabel('electrons/plane', size = 15)
-ax2.set_ylabel('V [eV]', size = 15)
-ax2.set_xlabel('planes', size = 15)
+ax1.set_ylabel('Electrons/plane', size = 16)
+ax2.set_ylabel('V [eV]', size = 16)
+ax2.set_xlabel('Planes', size = 16)
 
 ax1.set_xlim(-2,len(TBP.T[0])+1)
 
-plt.subplots_adjust(left = 0.17, hspace = 0.15, bottom = 0.1, top = 0.95)
+ax1.tick_params(labelsize = 12)
+ax2.tick_params(labelsize = 12)
+
+plt.subplots_adjust(left = 0.17, hspace = 0.15, bottom = 0.1, right = 0.94, top = 0.95)
 
 d = np.zeros_like(TBP.T[0])
 ax1.plot(TBP.T[0],TBP.T[2], lw = 1.6, c = 'teal', marker = 'o', ms = 5, zorder = 10)
@@ -99,7 +102,7 @@ print("-------------------------------------------")
 print("Total free charge: " + "{:.4f}".format(np.sum(TBP.T[2])) + '*|e|')
 print("-------------------------------------------")
 
-plt.savefig(identifier + '/' + identifier + '_fplot.png', dpi = 300)
+plt.savefig(identifier + '/' + identifier + '_fplot.pdf', dpi = 500)
 print('============================================================================')
 print('PLOT DONE!')
 print('============================================================================')

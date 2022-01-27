@@ -618,8 +618,28 @@ def Kmeshgrid(Nk = 15, scale = 1.0, delta_kx = 0.0, delta_ky = 0.0):
     -------
     ndarray of floats. Array containing every k-point of the grid. 
     """
-    delta = (delta_kx, delta_ky, 0.0) # define the shift in k_x, k_y
+    delta = np.array((delta_kx, delta_ky, 0.0)) # define the shift in k_x, k_y
     return monkhorst_pack((Nk,Nk,1))*scale + delta
+#------------------------------------------------------------------------------------------------------------------------------
+
+def Kmeshgrid2(Nk = 15, scale = 1.0, delta_kx = 0.0, delta_ky = 0.0, a = 1.0):
+    """
+    It generates the k-grid using the Monkhorst-Pack method as implemented in ASE. A shift and a 
+    scale factor to the grid can be set too.
+
+    Parameters
+    ----------
+    Nk : integer, optional. Square root of the total k-points in the grid.
+    scale : float, optional. Factor to affect the area encompassed by the grid.
+    delta_kx : float, optional. Shift in k_x direction of the grid.
+    delta_ky : float, optional. Shift in k_y direction of the grid.
+
+    Returns
+    -------
+    ndarray of floats. Array containing every k-point of the grid. 
+    """
+    delta = np.array((delta_kx, delta_ky, 0.0)) # define the shift in k_x, k_y
+    return monkhorst_pack((Nk,Nk,1))*scale + delta*a/(2*np.pi)
 #------------------------------------------------------------------------------------------------------------------------------
 
 def BandPath(path_str, cell, kpoints):

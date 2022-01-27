@@ -132,7 +132,7 @@ def PartialChargePlotter(rho0, rho1, rho2, rho3, data3):
     legend_size = data3['LABELS']['legend_size']
     
     save_data = data3['SAVING']['save_data']
-    save_plot = data3['SAVING']['save_data']
+    save_plot = data3['SAVING']['save_plot']
     pformat = data3['SAVING']['format']
     resol = data3['SAVING']['dpi']
     

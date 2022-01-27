@@ -10,8 +10,8 @@ ENERGY_PLOTTER :
                    
                    PLOT_ADJUST :
                                        plotstyle : 'ggplot'
-                                       point_size : 8
-                                       xy_limits : [-0.47, 0.47, -0.47, 0.47] #[x_min, x_max, y_min, y_max]
+                                       point_size : 7
+                                       xy_limits : [-0.46, 0.46, -0.46, 0.46] #[x_min, x_max, y_min, y_max]
                                        fig_size : [6,6]
                                        axis_adjust : [0.2, 0.15, 0.9, 0.9] #[left, bottom, right, top]
                                        title : ""
@@ -21,7 +21,7 @@ ENERGY_PLOTTER :
                                        xfontsize : 18
                                        ylabel : 'K$_y$  [$\AA^{-1}$]'
                                        yfontsize : 18
-                                       ticksize : 12
+                                       ticksize : 17
                    COLOR_TRIANGLE:
                                        proportion : '35%'
                                        location : 4
@@ -29,7 +29,7 @@ ENERGY_PLOTTER :
                                        fontsize : 16
                    SAVING :
                                        save_plot : yes
-                                       format : ".png"
-                                       dpi : 300                                       
+                                       format : ".pdf"
+                                       dpi : 500                                       
 ...                                       
 

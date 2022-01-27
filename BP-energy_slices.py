@@ -39,6 +39,8 @@ import argparse
 import yaml
 import scipy.linalg as LA
 import logging
+import matplotlib.pyplot as plt
+import sys
 
 # Loading the configuration files to set parameters not defined by terminal
 #--------------------------------------------------------------------------------------------------------------------------
@@ -152,7 +154,17 @@ printlog('BinPo, TB-Poisson Solver for 2DES\n'\
  'along with BinPo. See ~/COPYING file or <https://www.gnu.org/licenses/>.')
 if dk_x > 1.0 or dk_y > 1.0:
     printlog('The values for the k-grid shift exceeds the BZ1 periodicity!', label  = 'w')
-Kmesh = BPM.Kmeshgrid(Nk, scale = kbox, delta_kx = dk_x, delta_ky = dk_y) # Generation of kgrid
+Kmesh = BPM.Kmeshgrid2(Nk, scale = kbox, delta_kx = dk_x, delta_ky = dk_y, a = a0) # Generation of kgrid
+
+# fig = plt.figure()
+# ax = fig.add_subplot(111)
+# ax.set_xlim(-0.7,0.7)
+# ax.set_ylim(-0.7,0.7)
+# ax.set_aspect('equal')
+# ax.scatter(x = Kmesh.T[0], y = Kmesh.T[1])
+# plt.show()
+# sys.exit()
+
 now = dt.datetime.now()
 printlog('\n')
 printlog('---------------------------------------------------------------------')
@@ -204,6 +216,8 @@ V.update_potential(TBP.T[1])
 printlog('Constructing Hv tensor...')
 HV = V.to_tensor(int(Nk**2/Nfr))
 printlog('Done!')
+printlog('\n')
+printlog("------------------------------------------------------------------------")
     
 L0 = []# to save the data
     
