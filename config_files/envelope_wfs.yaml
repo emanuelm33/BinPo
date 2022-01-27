@@ -27,7 +27,7 @@ ENVELOPE_WAVEFUNCTIONS:
                                        legend_size : 14
                    SAVING :
                                        save_data : no
-                                       save_plot : no
+                                       save_plot : yes
                                        format : ".png"
                                        dpi : 300
 ...

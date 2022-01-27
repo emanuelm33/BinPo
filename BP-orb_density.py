@@ -168,10 +168,10 @@ def PartialChargePlotter(rho0, rho1, rho2, rho3, data3):
     Lout = [z, rho0, rho1, rho2, rho3]
     if save_data == True:
         printlog('Saving data...')
-        np.savetxt(identifier + '/' + identifier + '_charge.dat', np.array(Lout).T)    
+        np.savetxt(identifier + '/' + identifier + '_orb-dens.dat', np.array(Lout).T)    
     if save_plot == True:
     	printlog('Saving plot...')
-    	plt.savefig(identifier + '/' + identifier + '_charge' + pformat, dpi = resol)    	
+    	plt.savefig(identifier + '/' + identifier + '_orb-dens' + pformat, dpi = resol)    	
     return None
 #--------------------------------------------------------------------------------------------------------------------------
 # MAIN    
