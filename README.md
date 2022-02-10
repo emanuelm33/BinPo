@@ -3,8 +3,7 @@
 ### Version 1.0
 
 BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
-systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite  
-complex oxides, like strontium titanate (STO), in the main crystal faces. BinPo solves the Schrödinger-Poisson 
+systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite complex oxides, like strontium titanate (STO), in the main crystal faces. BinPo solves the Schrödinger-Poisson 
 scheme to obtain the self-consistent potential energy along the slab. The tight-binding Hamiltonian for this slab 
 is created from the transfer integrals in the Maximally Localized Wannier Functions (MLWF) basis. Once the self-
 consistent (SC) solution is found, properties like projected bandstructure and Fermi surface, orbital decomposition
