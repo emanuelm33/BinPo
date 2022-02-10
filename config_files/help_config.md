@@ -181,12 +181,11 @@ check the Matplotlib documentation at https://matplotlib.org/.
    - dpi = Integer. Dots per inch for the plot if saved. 
     
  
------------------------------------------------------------------------------------------------------------------
- energy_slices.yaml
------------------------------------------------------------------------------------------------------------------ 
+
+### energy_slices.yaml
+#---------------------
  
-ENERGY_SLICES:
---------------
+### ENERGY_SLICES:
            
 - identifier = String. Identifier to compute the energy slice.
 - sqrt_kgrid_numbers = Integer. Square root of the total number of points in k-grid. The total 2D Brillouin zone
@@ -199,12 +198,11 @@ ENERGY_SLICES:
 - energy_cut = Float. Energy in eV at which the slice is computed. 0.0 is the Fermi level.
 - outfile = String. Name of the output file. If 'default' it will be saved as 'identifier_ES.dat'
 
------------------------------------------------------------------------------------------------------------------
- energy_plot.yaml
------------------------------------------------------------------------------------------------------------------ 
 
-ENERGY_PLOTTER:
----------------
+### energy_plot.yaml
+#-------------------
+
+### ENERGY_PLOTTER:
            
 - identifier = String. Identifier to plot the energy slice.
 - input_file = String. Name of the input file. If 'default' it will load the deafault name 'identifier_ES.dat'.
@@ -244,12 +242,10 @@ ENERGY_PLOTTER:
   - dpi = Integer. Dots per inch for the plot if saved.  
 
  
------------------------------------------------------------------------------------------------------------------
- envelope_wfs.yaml
------------------------------------------------------------------------------------------------------------------ 
+### envelope_wfs.yaml
+--------------------- 
  
-ENVELOPE_WAVEFUNCTIONS:
------------------------
+### ENVELOPE_WAVEFUNCTIONS:
 
 - identifier = String. Identifier to compute the envelope wavefunctions at gamma point.
 - intensity_factor = Float. Scale factor to regulate the intensity of the envelope wavefunctions.                  
@@ -287,12 +283,11 @@ ENVELOPE_WAVEFUNCTIONS:
   - dpi = Integer. Dots per inch for the plot if saved.  
  
  
------------------------------------------------------------------------------------------------------------------
- orb_density.yaml
------------------------------------------------------------------------------------------------------------------  
+
+### orb_density.yaml
+--------------------  
  
-DENSITY_ANALYSIS:
------------------
+### DENSITY_ANALYSIS:
 
 - identifier = String. Identifier to compute the orbital decomposition of the electron density.
 - sqrt_kgrid_numbers = Square root of the total number of points in the k-grid. The total 2D Brillouin zone
