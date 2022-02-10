@@ -10,10 +10,9 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 ### scp.yaml
-#-----------------------------------------------------------------------------------------------------------------
+------------
 
-SCP_CALCULATION:
----------------
+### SCP_CALCULATION:
 
 - identifier = String. Identifier for the calculation. It is unique and can be recalled later in post-processing.
 - material = String. Name of the material (cubic perovskite ABO3) to be used. Allowed names: STO, KTO.
@@ -39,8 +38,7 @@ SCP_CALCULATION:
 - potential_live_visualization = Boolean. Step by step visualization of the Vin and Vout in the iterative process.
 - error_live_visualization = Boolean. Step by step visualization of the total error as funcion of iterations.
 
-- ADVANCED_PARAMETERS:
-  -------------------
+- ### ADVANCED_PARAMETERS:
   
   - conv_threshold = Float. Convergence threshold for V in self-consistent calculation.
   - max_iterations = Integer. Maximum number of allowed iterations.
@@ -55,12 +53,10 @@ SCP_CALCULATION:
     top-most layer to the bulk. It must be < (number_of_planes-1).
 
 
------------------------------------------------------------------------------------------------------------------
- bands.yaml
------------------------------------------------------------------------------------------------------------------
+### bands.yaml
+--------------
 
-BAND_STRUCTURE:
----------------
+### BAND_STRUCTURE:
 
 - identifier = String. Identifier for the calculation.
 - path = String. Path in the BZ1 to perform the bandstructure calculation. Special points for (100) direction are G,X 
