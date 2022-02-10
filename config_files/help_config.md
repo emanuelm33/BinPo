@@ -1,5 +1,4 @@
-MEANING OF THE PARAMETERS IN THE CONFIGURATION FILES
-====================================================
+## MEANING OF THE PARAMETERS IN THE CONFIGURATION FILES
 
 
 In the following lines you will find the specifications for the .yaml configuration files in BinPo.
@@ -10,9 +9,8 @@ check the Matplotlib documentation at https://matplotlib.org/.
 * For general information about .yaml files, visit https://yaml.org/.
 
 
------------------------------------------------------------------------------------------------------------------
- scp.yaml
------------------------------------------------------------------------------------------------------------------
+### scp.yaml
+#-----------------------------------------------------------------------------------------------------------------
 
 SCP_CALCULATION:
 ---------------
