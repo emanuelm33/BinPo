@@ -10,7 +10,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 ------------
-### scp.yaml
+## scp.yaml
 ------------
 
 ### SCP_CALCULATION:
@@ -56,7 +56,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 --------------
-### bands.yaml
+## bands.yaml
 --------------
 
 ### BAND_STRUCTURE:
@@ -187,7 +187,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
  
 ----------------------
-### energy_slices.yaml
+## energy_slices.yaml
 ----------------------
  
 ### ENERGY_SLICES:
@@ -207,7 +207,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 --------------------
-### energy_plot.yaml
+## energy_plot.yaml
 --------------------
 
 ### ENERGY_PLOTTER:
@@ -253,7 +253,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 --------------------- 
-### envelope_wfs.yaml
+## envelope_wfs.yaml
 --------------------- 
  
 ### ENVELOPE_WAVEFUNCTIONS:
@@ -297,7 +297,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
  
  
 --------------------
-### orb_density.yaml
+## orb_density.yaml
 --------------------  
  
 ### DENSITY_ANALYSIS:
