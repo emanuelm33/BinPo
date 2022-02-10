@@ -77,113 +77,113 @@ check the Matplotlib documentation at https://matplotlib.org/.
              
   - PLOT_ADJUST:
 
-   - plotstyle = String. Matplotlib plot style. 
-   - xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
-   - linecolor = String. Matplotlib color for the lineplot.                             
-   - linewidth = Float. Linewidth.
-   - fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
-   - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
-   - title = String. Title for the figure. If title == "", it will be ignored.
-   - title_size = Float. Fontsize for the figure title. Only if title != "".
-   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
-   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
+   	- plotstyle = String. Matplotlib plot style. 
+   	- xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
+   	- linecolor = String. Matplotlib color for the lineplot.                             
+   	- linewidth = Float. Linewidth.
+   	- fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
+   	- axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
+   	- title = String. Title for the figure. If title == "", it will be ignored.
+   	- title_size = Float. Fontsize for the figure title. Only if title != "".
+   	- shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   	- shadow_color = String. Matplotlib color for the opacity above Fermi level.
 
   - LABELS: 
 
-   - xlabel = String. X label for the figure. It accepts LaTeX syntax.
-   - xfontsize = Float. Fontsize for the x label.
-   - ylabel = String. Y label for the figure. It accepts LaTeX syntax.
-   - yfontsize = Float. Fontsize for the y label.
-   - ticksize = Float. Size of the ticks.
+   	- xlabel = String. X label for the figure. It accepts LaTeX syntax.
+   	- xfontsize = Float. Fontsize for the x label.
+   	- ylabel = String. Y label for the figure. It accepts LaTeX syntax.
+   	- yfontsize = Float. Fontsize for the y label.
+   	- ticksize = Float. Size of the ticks.
 
   - SAVING: 
 
-   - save_bands = Boolean. Whether or not to save the bands to a file.
-   - save_plot = Boolean. Whether or not to save the plot to a file.
-   - format = String. Format for the plot if saved.
-   - dpi = Integer. Dots per inch for the plot if saved. 
+   	- save_bands = Boolean. Whether or not to save the bands to a file.
+   	- save_plot = Boolean. Whether or not to save the plot to a file.
+   	- format = String. Format for the plot if saved.
+   	- dpi = Integer. Dots per inch for the plot if saved. 
 
 - ORBITAL_CHARACTER:
 
 
   - PLOT_ADJUST:
 
-   - plotstyle = String. Matplotlib plot style. 
-   - xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
-   - color_seq = String. Sequence of three colors as color1,color2,color3.                            
-   - point_size = Float. Pointsize for the scatter plot.
-   - fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
-   - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
-   - title = String. Title for the figure. If title == "", it will be ignored.
-   - title_size = Float. Fontsize for the figure title. Only if title != "".
-   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
-   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
+   	- plotstyle = String. Matplotlib plot style. 
+   	- xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
+   	- color_seq = String. Sequence of three colors as color1,color2,color3.                            
+   	- point_size = Float. Pointsize for the scatter plot.
+   	- fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
+   	- axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
+   	- title = String. Title for the figure. If title == "", it will be ignored.
+   	- title_size = Float. Fontsize for the figure title. Only if title != "".
+   	- shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   	- shadow_color = String. Matplotlib color for the opacity above Fermi level.
              
   - COLOR_TRIANGLE:
 
-   - proportion = String. Axes percentage occupied by the color triangle.
-   - location = Integer. Location according to matplotlib positions rules. Values are between [1,10]
-   - padding = Float. Separation from the axes if triangle is near to some edge.
-   - fontsize = Float. Fontsize for text in triangle color.
+   	- proportion = String. Axes percentage occupied by the color triangle.
+   	- location = Integer. Location according to matplotlib positions rules. Values are between [1,10]
+   	- padding = Float. Separation from the axes if triangle is near to some edge.
+   	- fontsize = Float. Fontsize for text in triangle color.
     
   - LABELS:
                   
-   - xlabel = String. X label for the figure. It accepts LaTex syntax.
-   - xfontsize = Float. Fontsize for the x label.
-   - ylabel = String. Y label for the figure. It accepts LaTeX syntax.
-   - yfontsize = Float. Fontsize for the y label.
-   - ticksize = Float. Size of the ticks.
+   	- xlabel = String. X label for the figure. It accepts LaTex syntax.
+   	- xfontsize = Float. Fontsize for the x label.
+   	- ylabel = String. Y label for the figure. It accepts LaTeX syntax.
+   	- yfontsize = Float. Fontsize for the y label.
+   	- ticksize = Float. Size of the ticks.
      
   - SAVING: 
 
-   - save_bands = Boolean. Whether or not to save the bands to a file.
-   - save_plot = Boolean. Whether or not to save the plot to a file.
-   - format = String. Format for the plot if saved.
-   - dpi = Integer. Dots per inch for the plot if saved. 
+   	- save_bands = Boolean. Whether or not to save the bands to a file.
+   	- save_plot = Boolean. Whether or not to save the plot to a file.
+   	- format = String. Format for the plot if saved.
+   	- dpi = Integer. Dots per inch for the plot if saved. 
 
 - PLANE_PROJECTION: 
 
   
   - PLOT_ADJUST:
 
-   - plotstyle = String. Matplotlib plot style.  
-   - xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
-   - colormap = String. Matplotlib colormap.'Cop', 'Ang' and 'cte_N'
-   - background_color = String. Matplotlib color for the background.
-   - point_size = Float. Pointsize for the scatter plot. 
-   - fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
-   - axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
-   - title = String. Title for the figure. If title == "", it will be ignored.
-   - title_size = Float. Fontsize for the figure title. Only if title != "".
-   - shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
-   - shadow_color = String. Matplotlib color for the opacity above Fermi level.
+   	- plotstyle = String. Matplotlib plot style.  
+   	- xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
+   	- colormap = String. Matplotlib colormap.'Cop', 'Ang' and 'cte_N'
+   	- background_color = String. Matplotlib color for the background.
+   	- point_size = Float. Pointsize for the scatter plot. 
+   	- fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].
+   	- axis_adjust = Float (list). Axes location within the figure set as [left, bottom, right, top].
+   	- title = String. Title for the figure. If title == "", it will be ignored.
+   	- title_size = Float. Fontsize for the figure title. Only if title != "".
+   	- shadow_above_Ef = Float. Opacity above Fermi level. It must be between 0.0 (no opacity) and 1.0 (solid).
+   	- shadow_color = String. Matplotlib color for the opacity above Fermi level.
      
   - COLORBAR:
  
-   - location = Float (list). Location of the colorbar set as [x, y, width, height]
-   - textbar = String (list). Text to be located at the bottom and at the top of the colorbar.
-   - fontsize  = Float. Fontsize for the text in colorbar.
-   - fontcolor = String. Color for the text in colorbar.
+   	- location = Float (list). Location of the colorbar set as [x, y, width, height]
+   	- textbar = String (list). Text to be located at the bottom and at the top of the colorbar.
+   	- fontsize  = Float. Fontsize for the text in colorbar.
+   	- fontcolor = String. Color for the text in colorbar.
     
   - LABELS:
    
-   - xlabel = String. X label for the figure. It accepts LaTex syntax.
-   - xfontsize = Float. Fontsize for the x label.
-   - ylabel = String. Y label for the figure. It accepts LaTex syntax.
-   - yfontsize = Float. Fontsize for the y label.
-   - ticksize = Float. Size of the ticks.
+   	- xlabel = String. X label for the figure. It accepts LaTex syntax.
+   	- xfontsize = Float. Fontsize for the x label.
+   	- ylabel = String. Y label for the figure. It accepts LaTex syntax.
+   	- yfontsize = Float. Fontsize for the y label.
+   	- ticksize = Float. Size of the ticks.
    
   - SAVING: 
 
-   - save_bands = Boolean. Whether or not to save the bands to a file.
-   - save_plot = Boolean. Whether or not to save the plot to a file.
-   - format = String. Format for the plot if saved.
-   - dpi = Integer. Dots per inch for the plot if saved. 
+   	- save_bands = Boolean. Whether or not to save the bands to a file.
+   	- save_plot = Boolean. Whether or not to save the plot to a file.
+   	- format = String. Format for the plot if saved.
+   	- dpi = Integer. Dots per inch for the plot if saved. 
     
  
 
 ### energy_slices.yaml
-#---------------------
+----------------------
  
 ### ENERGY_SLICES:
            
@@ -200,7 +200,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 
 ### energy_plot.yaml
-#-------------------
+--------------------
 
 ### ENERGY_PLOTTER:
            

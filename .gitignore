@@ -1,4 +1,3 @@
 BPexamples/
 /README.md
-/config_files/help_config.md
-/config_files/*.yaml
+config_files/
