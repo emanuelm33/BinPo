@@ -102,7 +102,7 @@ print("-------------------------------------------")
 print("Total free charge: " + "{:.4f}".format(np.sum(TBP.T[2])) + '*|e|')
 print("-------------------------------------------")
 
-plt.savefig(identifier + '/' + identifier + '_fplot.pdf', dpi = 500)
+plt.savefig(identifier + '/' + identifier + '_fplot.png', dpi = 300)
 print('============================================================================')
 print('PLOT DONE!')
 print('============================================================================')

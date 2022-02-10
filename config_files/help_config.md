@@ -37,7 +37,7 @@ SCP_CALCULATION:
 - mixing_factor = Float. Mixing factor for the over-relaxation mixing method. Tipically 0.06-0.4.
 - permittivity_model = String. Model used for relative permittivity as function of electric field E. Pre-defined 
   models are: 'Cop', 'Ang' and 'cte_N'. Alternatively, an expression as function of E in python syntax could be 
-  introduced. For a quick explanation of the models see below.* 
+  introduced.
 - potential_live_visualization = Boolean. Step by step visualization of the Vin and Vout in the iterative process.
 - error_live_visualization = Boolean. Step by step visualization of the total error as funcion of iterations.
 
@@ -154,7 +154,7 @@ BAND_STRUCTURE:
   --------------
    - plotstyle = String. Matplotlib plot style.  
    - xy_limits = Float (list). Limits for the plot. Write it as [x_min, x_max, y_min, y_max].
-   - colormap = String. Matplotlib colormap.
+   - colormap = String. Matplotlib colormap.'Cop', 'Ang' and 'cte_N'
    - background_color = String. Matplotlib color for the background.
    - point_size = Float. Pointsize for the scatter plot. 
    - fig_size = Float (list). Size of the matplotlib figure set as [x_dim, y_dim].

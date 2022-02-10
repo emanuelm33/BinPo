@@ -63,7 +63,7 @@ msj_Nk = "Square root of the total number of points in 2D k-grid. Integer. It mu
 msj_BC1 = "Dirichlet boundary condition for V in eV at the top-most layer (i.e. V[0]). Float. Allowed range: [-1, -0.001]."
 msj_BC2 = "Dirichlet boundary condition for V in eV in the bottom-most layer (i.e. V[L-1]). Float. Allowed range: [bc1, 3*|bc1|]."
 msj_dE = "Energy shift (dE) from LUL in eV. Used to define the Fermi level as ef = LUL + dE. Float. Allowed range: [0.0, 0.02]."
-msj_pm = "Model used for relative permittivity as function of electric field E. String. Available models are: 'Cop', 'Nev1', 'Nev2', 'Mat' and 'cte_N'. "\
+msj_pm = "Model used for relative permittivity as function of electric field E. String. Available models are: 'Cop', 'Ang' and 'cte_N'. "\
 "Alternatively, an expression as function of E in python syntax could be introduced. See the comments in scp.yaml for information."
 msj_mf = "Mixing factor for the over-relaxation mixing method. Float. Tipically 0.06-0.4."
 #--------------------------------------------------------------------------------------------------------------------------
