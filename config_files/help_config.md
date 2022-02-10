@@ -9,6 +9,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 * For general information about .yaml files, visit https://yaml.org/.
 
 
+------------
 ### scp.yaml
 ------------
 
@@ -53,6 +54,8 @@ check the Matplotlib documentation at https://matplotlib.org/.
     top-most layer to the bulk. It must be < (number_of_planes-1).
 
 
+
+--------------
 ### bands.yaml
 --------------
 
@@ -180,6 +183,8 @@ check the Matplotlib documentation at https://matplotlib.org/.
    	- format = String. Format for the plot if saved.
    	- dpi = Integer. Dots per inch for the plot if saved. 
     
+
+
  
 ----------------------
 ### energy_slices.yaml
@@ -199,6 +204,9 @@ check the Matplotlib documentation at https://matplotlib.org/.
 - outfile = String. Name of the output file. If 'default' it will be saved as 'identifier_ES.dat'
 
 
+
+
+--------------------
 ### energy_plot.yaml
 --------------------
 
@@ -210,7 +218,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 - color_seq = String. Sequence of 3 colors as color1,color2,color3.  
 - energy_window = Float. Energy window. The points shown will range from (energy_cut-energy_window) to energy_cut.
                    
-- PLOT_ADJUST:
+- ### PLOT_ADJUST:
 
  - plotstyle = String. Matplotlib plot style. 
  - point_size = Float. Pointsize for the scatter plot.
@@ -220,7 +228,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
  - title = String. Title for the figure. If title == "", it will be ignored.
  - title_size = Float. Fontsize for the figure title. Only if title != "".
    
-- LABELS:
+- ### LABELS:
 
   - xlabel = String. X label for the figure. It accepts LaTex syntax.
   - xfontsize = Float. Fontsize for the x label.
@@ -228,20 +236,23 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - yfontsize = Float. Fontsize for the y label.
   - ticksize = Float. Size of the ticks.
    
-- COLOR_TRIANGLE:
+- ### COLOR_TRIANGLE:
 
   - proportion = String. Axes percentage occupied by the color triangle.
   - location = Integer. Location according to matplotlib positions rules. Values are between [1,10]
   - padding = Float. Separation from the axes if triangle is near to some edge.
   - fontsize = Float. Fontsize for text in triangle color.
    
-- SAVING:
+- ### SAVING:
 
   - save_plot = Boolean. Whether or not to save the plot to a file.
   - format = String. Format for the plot if saved.
   - dpi = Integer. Dots per inch for the plot if saved.  
 
- 
+
+
+
+--------------------- 
 ### envelope_wfs.yaml
 --------------------- 
  
@@ -251,7 +262,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 - intensity_factor = Float. Scale factor to regulate the intensity of the envelope wavefunctions.                  
 - number_of_wavefunctions = Integer. Number of envelope wavefunctions to be computed.
           
-- PLOT_ADJUST:
+- ### PLOT_ADJUST:
 
   - plotstyle = String. Matplotlib plot style. 
   - linewidth_wfs = String. Linewidth for the wavefunctions curves. 
@@ -265,7 +276,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - title = String. Title for the figure. If title == "", it will be ignored.
   - title_size = Float. Fontsize for the figure title. Only if title != "".
      
-- LABELS:
+- ### LABELS:
 
   - xlabel = String. X label for the figure. It accepts LaTex syntax.
   - xfontsize = Float. Fontsize for the x label.
@@ -275,7 +286,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - legends = Boolean. Whether or not to include the legends in the plot.
   - legend_size = Float. If 'legends = yes', it sets the fontsize of legends.
    
-- SAVING:
+- ### SAVING:
 
   - save_data = Boolean. Whether or not to save the data to a file.
   - save_plot = Boolean. Whether or not to save the plot to a file.
@@ -283,7 +294,9 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - dpi = Integer. Dots per inch for the plot if saved.  
  
  
-
+ 
+ 
+--------------------
 ### orb_density.yaml
 --------------------  
  
@@ -294,7 +307,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
   is spanned. It must be > 10.
 - k_shift = Float (list). 2D kgrid offset as follows: (k_x, k_y) + (k_shift[0], k_shift[1]).
      
-- PLOT_ADJUST:
+- ### PLOT_ADJUST:
 
   - plotstyle = String. Matplotlib plot style.
   - linewidth = Float. Linewidth for all profiles.
@@ -307,7 +320,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - title = String. Title for the figure. If title == "", it will be ignored.
   - title_size = Float. Fontsize for the figure title. Only if title != "".
    
-- LABELS:
+- ### LABELS:
 
   - xlabel = String. X label for the figure. It accepts LaTex syntax.
   - xfontsize = Float. Fontsize for the x label.
@@ -317,7 +330,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
   - legends = Boolean. Whether or not to include the legends in the plot.
   - legend_size = Float. If 'legends = yes', it sets the fontsize of legends.
     
-- SAVING:
+- ### SAVING:
 
   - save_data = Boolean. Whether or not to save the data to a file.
   - save_plot = Boolean. Whether or not to save the plot to a file.
