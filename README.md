@@ -32,6 +32,7 @@ Enviroment (ASE) library, version >= 3.2 (https://wiki.fysik.dtu.dk/ase/).
 Currently, BinPo can be used for 2DES formed on the (100), (110) and (111) faces of:
 * strontium titanate, STO
 * potassium tantalate, KTO
+
 Additionally, the code has modularity to append new materials (cubic ABO3 perovskites) if desired. 
 BinPo allows for computing the following properties:
 * The SC solution to the Schrödinger-Poisson scheme in the slab. It includes the SC-potential energy, electron density,
