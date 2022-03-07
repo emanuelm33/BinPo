@@ -1,16 +1,19 @@
+![Logo](https://user-images.githubusercontent.com/94184924/156950182-06b978a4-9302-460f-bb24-5f78c3ecafc8.png)
+
 ## BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
 
 ### Version 1.0
 
-BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron
-systems (2DES). At present, it could be used for electronic properties at the surface/interface of perovskite complex oxides, like strontium titanate (STO), in the main crystal faces. BinPo solves the Schrödinger-Poisson 
-scheme to obtain the self-consistent potential energy along the slab. The tight-binding Hamiltonian for this slab 
-is created from the transfer integrals in the Maximally Localized Wannier Functions (MLWF) basis. Once the self-
-consistent (SC) solution is found, properties like projected bandstructure and Fermi surface, orbital decomposition
-of electron density and envelope wavefunctions can be computed in post-processing steps. BinPo gives priority to 
-ease-of-use and efficiency in order to produce realistic simulations at low computational cost. High quality and 
-customized figures can be obtained from the simulations. To see details of the methodology applied, please refer to 
-our manuscript. To know how to use this code, please see "Usage" section below.
+BinPo is a Python code to compute the electronic bandstructure and other properties in 2D electron systems (2DES).
+At present, it could be used for electronic properties at the surface/interface of perovskite complex oxides, 
+like strontium titanate (STO), in the main crystal faces. BinPo solves the Schrödinger-Poisson scheme to obtain
+the self-consistent potential energy along the slab. The tight-binding Hamiltonian for this slab is created from
+the transfer integrals in the Maximally Localized Wannier Functions (MLWF) basis. Once the self-consistent (SC)
+solution is found, properties like projected bandstructure and Fermi surface, orbital decomposition of electron
+density and envelope wavefunctions can be computed in post-processing steps. BinPo gives priority to ease-of-use
+and efficiency in order to produce realistic simulations at low computational cost. High quality and customized
+figures can be obtained from the simulations. To see details of the methodology applied, please refer to our 
+manuscript. To know how to use this code, please see "Usage" section below.
 
 ### Prerequisites
 
@@ -36,12 +39,13 @@ Additionally, the code has modularity to append new materials (cubic ABO3 perovs
 BinPo allows for computing the following properties:
 * The SC solution to the Schrödinger-Poisson scheme in the slab. It includes the SC-potential energy, electron density,
   electric field and relative permittivity values. 
-* Bandstructure of the 2DES along high-symmetry points within the irreducible Brillouin zone. The bands calculation
+* Band structure of the 2DES along high-symmetry points within the irreducible Brillouin zone. The bands calculation
   can be total (without projections), projected onto the atomic orbitals or projected onto a set of planes.
 * Fermi surface and, more generally, energy slices with or without projections onto the atomic orbitals.
 * Decomposition of electron density into the atomic orbitals contributions.
-* Envelope wavefunctions at gamma point calculation. 
-Furthermore, you can analyze the simulations results by Matplotlib interactive plots and generate customized high
+* Envelope wavefunctions at gamma point calculation.
+ 
+Furthermore, you can analyze the simulations outputs by Matplotlib interactive plots and generate customized high
 quality plots for publishing.
 
 ### License
@@ -62,7 +66,7 @@ Request for adding features will be welcomed but without guarantees of future im
                    Hamiltonian of the bulk unit cell. There is a specific file for each material,
                    as well as for the characteristics of the original DFT calculation (e. g. XC-functional).
 
-* examples:        This folder contains .pdf files with detailed descriptions about the calculation presented as 
+* BPexamples:        This folder contains .pdf files with detailed descriptions about the calculation presented as 
                    examples in our main manuscript.
 
 * config_files:    This folder contains the configuration files .yaml for each component of BinPo. Besides, there
