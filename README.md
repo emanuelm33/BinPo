@@ -13,7 +13,7 @@ Functions (MLWF) basis. Once the self-consistent (SC) solution is found, propert
 surface, orbital decomposition of electron density and envelope wavefunctions can be computed in post-processing steps.
 _BinPo_ gives priority to ease-of-use and efficiency in order to produce realistic simulations at low computational cost.
 High quality and customized figures can be obtained from the simulations. To see details of the methodology applied, please
-refer to our manuscript. For a quick start about how to use this code, please see "Usage" section below.
+refer to our preprint on https://arxiv.org/abs/2203.11308. For a quick start about how to use this code, please see "Usage" section below.
 
 ### Prerequisites
 
