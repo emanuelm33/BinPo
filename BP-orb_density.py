@@ -3,7 +3,7 @@
  BinPo, TB-Poisson Solver for 2DES
  Copyright (C) 2021 BinPo Team
  
-BP-orb_density.py is part of BinPo.
+ BP-orb_density.py is part of BinPo.
  
  BinPo is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
@@ -21,14 +21,16 @@ BP-orb_density.py is part of BinPo.
  DESCRIPTION:
      ORBITAL DECOMPOSITION OF ELECTRON DENSITY
      BP-orb_density.py component allows for decomposing and plotting the 
-     electron density according to the orbital character.
+     electron density according to the orbital character. At present, this
+     component is only available for cubic systems with t2g manifold, such
+     as STO, KTO and CTO.
 """
 
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.0
-__date__ = "January 14, 2022"
+__version__ = 1.1
+__date__ = "August 9, 2022"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -39,6 +41,7 @@ import datetime as dt
 import argparse
 import yaml
 import logging
+import os
 
 # Loading the configuration files to set parameters not defined by terminal
 #--------------------------------------------------------------------------------------------------------------------------
@@ -80,15 +83,19 @@ ALPHA = args.aa
 Nk = args.nk
 #--------------------------------------------------------------------------------------------------------------------------
 # Loading more parameters from the files
-a0 = params['lattice_parameter'] # lattice parameter of cubic structure 
+a0 = params['lattice_parameter'] # lattice parameter of cubic or hexagonal structure 
 T = params['temperature'] # temperature in K
-bc1 = params['BC1_topmost_layer']
-bc2 = params['BC2_in_bulk']
-ef = params['Fermi_level'] #Fermi level in eV as LUL + dE
+bc1 = params['BC1_topmost_layer'] # bc value for potential V at the top-most layer
+bc2 = params['BC2_in_bulk'] # bc value for V at the bottom-most layer
+ef = params['Fermi_level'] # Fermi level in eV as LUL + dE
 L = params['number_of_planes'] # number of planes
-material = params['material'] # material
-face = params['crystal_face'] # crystal face
+material = params['material'] # name of the material or system
+face = params['crystal_face'] # confinement direction
 dk_x, dk_y = params['k_shift'] # shift in k-grid
+manifold = params['manifold'] # type of manifold
+NWANN = int(params['Wannier_functions_number']) # number of elements in the MLWF basis
+HOL = float(params['highest_occupied_level']) # highest occupied level (valence band maximum)
+sgeom = params['system_geometry'] # unit-cell symmetry
 #--------------------------------------------------------------------------------------------------------------------------
 # Creating a logger object for the current program
 log_path = identifier + '/' + identifier + '.log'
@@ -110,9 +117,9 @@ def printlog(text, level = 'i'): # Simple function for general logging
         logger1.error(text)
         raise ValueError(text)  
 #--------------------------------------------------------------------------------------------------------------------------
-
 def PartialChargePlotter(rho0, rho1, rho2, rho3, data3):
-    # Unfolding dictionary data3
+    # unfolding data0 dictionary to load several details
+    # for the matplotlib plot
     plotstyle = data3['PLOT_ADJUST']['plotstyle']
     fig_size = data3['PLOT_ADJUST']['fig_size']
     lw = data3['PLOT_ADJUST']['linewidth']
@@ -174,7 +181,10 @@ def PartialChargePlotter(rho0, rho1, rho2, rho3, data3):
     	plt.savefig(identifier + '/' + identifier + '_orb-dens' + pformat, dpi = resol)    	
     return None
 #--------------------------------------------------------------------------------------------------------------------------
-# MAIN    
+# MAIN
+#------------------------------------------------------------------------------------
+# NOTE : At moment, this component is only available for cubic systems
+# with t2g manifold, such as STO, KTO and CTO.    
 #####################################################################################
 printlog('\n')
 printlog('=========================================================================')
@@ -193,7 +203,7 @@ printlog('---------------------------------------------------------------------'
 printlog('\n')
 printlog('BinPo, TB-Poisson Solver for 2DES\n'\
  'Copyright (C) 2021 BinPo Team\n\n'\
- 'BP-energy_plot.py is part of BinPo.\n\n'\
+ 'BP-orb_density.py is part of BinPo.\n\n'\
  'BinPo is free software: you can redistribute it and/or modify\n'\
  'it under the terms of the GNU General Public License as published by\n'\
  'the Free Software Foundation, either version 3 of the License, or\n'\
@@ -207,10 +217,17 @@ printlog('BinPo, TB-Poisson Solver for 2DES\n'\
 
 if dk_x > 1.0 or dk_y > 1.0:
     printlog('The values for the k-grid shift exceeds the BZ1 periodicity!', label  = 'w')
-Kmesh = BPM.Kmeshgrid(Nk, delta_kx = dk_x, delta_ky = dk_y) # Generation of kgrid
+    
+Kmesh = BPM.Kmeshgrid(Nk, delta_kx = dk_x, delta_ky = dk_y) # Generation of k-grid
 
-if Nk < 10:
-    printlog('sqrt_kgrid_numbers must be greater than 10!', level = 'e')
+Nk_min = 10 # lower limit for Nk
+if Nk < Nk_min:
+    printlog('sqrt_kgrid_numbers must be greater than ' + str(Nk_min), level = 'e')
+
+if manifold != 't2g':
+    printlog('\n')
+    printlog('Orbital decomposition of the electron density onto an arbitrary set of MLWFs is not implemented yet.', 'e')
+    printlog('\n')
 
 now = dt.datetime.now()
 printlog('\n')
@@ -228,66 +245,53 @@ printlog('\tFermi level: ' + "{:.5f}".format(ef) + ' eV')
 printlog('\n')
 
 start = t.time() # general time reference
-
+#############################################################################################################
+# files loading and Wannier separation
 printlog('Loading files...')
-Z_7 = np.loadtxt('./Hr' + material + face + '/Z_7.dat')
-Z_6 = np.loadtxt('./Hr' + material + face + '/Z_6.dat')
-Z_5 = np.loadtxt('./Hr' + material + face + '/Z_5.dat')
-Z_4 = np.loadtxt('./Hr' + material + face + '/Z_4.dat')
-Z_3 = np.loadtxt('./Hr' + material + face + '/Z_3.dat')
-Z_2 = np.loadtxt('./Hr' + material + face + '/Z_2.dat')
-Z_1 = np.loadtxt('./Hr' + material + face + '/Z_1.dat')
-Z0 = np.loadtxt('./Hr' + material + face + '/Z0.dat')
+DD  = {} # dictionary to save the r-space Hamiltonian elements separated by planes
+for z in os.listdir('./Hr' + material + face):
+    Z = np.loadtxt('./Hr' + material + face + '/' + z)
+    DD[z.split('.')[0]] = BPM.Wann_Sep(Z, NWANN)
 
-D_7 = BPM.Wann_Sep(Z_7)    
-D_6 = BPM.Wann_Sep(Z_6)
-D_5 = BPM.Wann_Sep(Z_5)
-D_4 = BPM.Wann_Sep(Z_4)
-D_3 = BPM.Wann_Sep(Z_3)
-D_2 = BPM.Wann_Sep(Z_2)
-D_1 = BPM.Wann_Sep(Z_1)
-D0 = BPM.Wann_Sep(Z0)
-
-printlog("Transforming <0w|H|Rw'> to k-space...")
+printlog("Transforming <0w|H|Rw'> to k-space...") # 2D Fourier transform of the <0 w|H|Rxy+Rz w'> elements
+printlog("It could take a while...")
 t0 = t.time()
+DDT = {} # dictionary to save the k-space Hamiltonian elements
+for key, val in DD.items(): # creating empty list inside DDT to set the size
+            DDT['T_' + key] = []
 
-T_7 = BPM.Hopping2D(Kmesh,D_7)
-T_6 = BPM.Hopping2D(Kmesh,D_6)
-T_5 = BPM.Hopping2D(Kmesh,D_5)
-T_4 = BPM.Hopping2D(Kmesh,D_4)
-T_3 = BPM.Hopping2D(Kmesh,D_3)
-T_2 = BPM.Hopping2D(Kmesh,D_2)
-T_1 = BPM.Hopping2D(Kmesh,D_1)
-T0 = BPM.Hopping2D(Kmesh,D0)
+for key, val in DD.items(): # filling DDT with the 2D Fourier transformed Hamiltonian elements
+            DDT['T_' + key] = BPM.Hopping2D(Kmesh, val)
 
-
-BPM.Quasi2DHamiltonian.set_parameters(T, ef, Nk*Nk)
-H = BPM.Quasi2DHamiltonian(T_7, T_6, T_5, T_4, T_3, T_2, T_1, T0, L)
-
+H = BPM.Quasi2DHamiltonian(DDT, L, NWANN) # initializing the Quasi2D Hamiltonian instance
+BPM.Quasi2DHamiltonian.set_parameters(T, ef, Nk*Nk, HOL)
 printlog('Done!')
 printlog('Time spent: ' + "{:.2f}".format(t.time()-t0) + ' seg')
+printlog('\n')
+#############################################################################################################
 
 t1 = t.time()
 printlog('Constructing the slab Hamiltonian...')
-Hk = H.HamiltonianTensor()
+Hk = H.HamiltonianTensor(NWANN) # creating Hamiltonian tensor
 printlog('Done!')
 printlog('Time spent: ' + "{:.2f}".format(t.time()-t1) + ' seg')
 
 printlog('Setting crystal properties and initializing potential energy...')
-V = BPM.PotentialEnergy(L, bc1, bc2)
-V.update_potential(TBP.T[1])
-crystal = BPM.CrystalFeatures(face, a0, material)
-d_hkl = crystal.interplanar_distance() 
-A_hkl = crystal.face_area()
+V = BPM.PotentialEnergy(L, bc1, bc2) # initializing potential instance
+V.update_potential(TBP.T[1]) # updating the potential instance with the SC potential values
+crystal = BPM.CrystalFeatures(face, a0, material) # initializing the crystal instance
+d_hkl = crystal.interplanar_distance() # interplanar distance
+A_hkl = crystal.face_area() # area of 2D real lattice
 printlog('Done!')
 
 t2 = t.time()
 printlog('Starting diagonalization and charge density calculation...')
 printlog('It could take a while...')
 
-Hv = V.to_tensor()
-Lrho = []
-Lrho_xy, Lrho_yz, Lrho_zx = [], [], []
+Hv = V.to_tensor() # creating potential energy tensor
+Lrho = [] # auxiliary list to save the electron density
+Lrho_xy, Lrho_yz, Lrho_zx = [], [], [] # auxiliary list to save the electron density
+                                       # according to the orbital character 
 #--------to select the orbital indices
 zx_u = np.arange(0,6*L,6)
 zx_d = np.arange(1,6*L,6)
@@ -301,11 +305,12 @@ xy = np.sort(np.concatenate([xy_u,xy_d]))
 #---------------------------------------        
 
 kBT_ext = 3 # How many kB*T intervals to take above the Fermi level
+fLim = 1.01 # this factor increases a bit the value of HOL to set the lower bound in eigh method
 for hk in Hk: 
     HT = hk + Hv
     # It tries to use scipy routine, which is faster. Otherwise, numpy routine will be used.
     try:
-        w, v = LA.eigh(HT, lower = True, overwrite_a = True, subset_by_value = (-np.inf, ef + kBT_ext*BPM.eVtoJ*BPM.kB*T))
+        w, v = LA.eigh(HT, lower = True, overwrite_a = True, subset_by_value = (HOL*fLim, ef + kBT_ext*BPM.eVtoJ*BPM.kB*T))
     except:
         w0, v = np.linalg.eigh(HT, UPLO = 'L')
         w = w0[np.where(w0<(ef + kBT_ext*BPM.eVtoJ*BPM.kB*T))]
@@ -335,6 +340,7 @@ printlog('Done!')
 printlog('Time spent: ' + "{:.2f}".format(t.time()-t2) + ' seg')
 
 printlog('\n')
+# plotting the result
 PartialChargePlotter(rho, rho_xy, rho_yz, rho_zx, data['DENSITY_ANALYSIS'])
 printlog('\n')
 

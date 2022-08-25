@@ -22,14 +22,14 @@
  DESCRIPTION:
      BANDSTRUCTURE CALCULATION
      BP-bands.py component computes the band structure for a 2DES along a
-     selected path between high symmetry points in the IBZ1.
+     selected path between high symmetry points in the irreducible BZ1.
 """
 
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.0
-__date__ = "January 20, 2022"
+__version__ = 1.1
+__date__ = "August 9, 2022"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,6 +41,7 @@ import argparse
 from matplotlib.colors import Normalize
 import yaml
 import logging
+import os
 
 # Loading the configuration files to set parameters not defined by terminal
 #--------------------------------------------------------------------------------------------------------------------------
@@ -105,15 +106,19 @@ else:
 #--------------------------------------------------------------------------------------------------------------------------
 # Loading more parameters from the files
 L = params['number_of_planes'] # number of planes
-material = params['material']
+material = params['material'] # name of the material or system
 face = params['crystal_face'] # crystal face
 a0 = params['lattice_parameter'] # lattice parameter of cubic structure 
 T = params['temperature'] # temperature in K
-bc1 = params['BC1_topmost_layer']
-bc2 = params['BC2_in_bulk']
+bc1 = params['BC1_topmost_layer'] # bc value for potential V at the top-most layer
+bc2 = params['BC2_in_bulk'] # bc value for V at the bottom-most layer
 method = data['BAND_STRUCTURE']['Total_Hk_method'] # method to create the Hamiltonian tensor
-F_LEVEL = params['Fermi_level'] #Fermi level in eV as LUL + dE
-REF_KPOINT = data['BAND_STRUCTURE']['reference_kpoint']
+F_LEVEL = params['Fermi_level'] # Fermi level in eV as LUL + dE
+REF_KPOINT = data['BAND_STRUCTURE']['reference_kpoint'] # high-symmery point used as zero
+manifold = params['manifold'] # type of manifold
+NWANN = int(params['Wannier_functions_number']) # number of elements in the MLWF basis
+HOL = float(params['highest_occupied_level']) # highest occupied level (valence band maximum)
+sgeom = params['system_geometry'] # unit-cell symmetry
 #--------------------------------------------------------------------------------------------------------------------------
 # Creating a logger object for the current program
 log_path = identifier + '/' + identifier + '.log'
@@ -137,9 +142,10 @@ def printlog(text, level = 'i'): # Simple function for general logging
 #--------------------------------------------------------------------------------------------------------------------------
 # PLOTTING FUNCTIONS DEFINITION
 #--------------------------------------------------------------------------------------------------------------------------
-# simple band plotter
+# simple total band structure plotter
 def Band_Plotter(bandout, pathAxis, data1):
-    # Unfolding dictionary data1
+    # unfolding data1 dictionary to load several details
+    # for the matplotlib line plot
     plotstyle = data1['PLOT_ADJUST']['plotstyle']
     lc = data1['PLOT_ADJUST']['linecolor']
     lw = data1['PLOT_ADJUST']['linewidth']
@@ -196,7 +202,8 @@ def Band_Plotter(bandout, pathAxis, data1):
 #--------------------------------------------------------------------------------------------------------------------------
 # band structure including orbital character
 def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
-    # Unfolding dictionary data2
+    # unfolding data2 dictionary to load several details
+    # for the matplotlib marker plot
     plotstyle = data2['PLOT_ADJUST']['plotstyle']
     c1, c2, c3 = data2['PLOT_ADJUST']['color_seq'].split(',')
     ps = data2['PLOT_ADJUST']['point_size']
@@ -265,12 +272,13 @@ def Band_Plot_TriColor(TBP, TBPc1, TBPc2, TBPc3, pathAxis, data2):
     if save_plot == True:
         printlog('Saving plot...')
         plt.savefig(identifier + '/' + identifier + '_bands_orbchar_' + str_path + pformat, dpi = resol)
-    fig2.show()        
+    fig2.show()   
+     
 #--------------------------------------------------------------------------------------------------------------------------
-# mapcolor for projections onto the B-planes
-
+# band structure with projections onto planes
 def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
-    # Unfolding dictionary data3
+    # unfolding data3 dictionary to load several details
+    # for the matplotlib marker plot
     plotstyle = data3['PLOT_ADJUST']['plotstyle']
     ps = data3['PLOT_ADJUST']['point_size']
     fig_size = data3['PLOT_ADJUST']['fig_size']
@@ -308,7 +316,6 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
         im = ax.scatter(pathAxis[0]-xshift, TBP.T[i]-F_LEVEL, marker = 'o', s = ps, c = TBP1.T[i], cmap = c_map, norm = Normalize(0,1), zorder = -30)
         if save_data == True:
             Lout.append(TBP.T[i]-F_LEVEL)
-            # Lout.append(TBP1.T[i]-F_LEVEL) # bug detected!!
             Lout.append(TBP1.T[i])
     cax = fig3.add_axes(locbar) 
     clb = fig3.colorbar(im, ax=ax, cax = cax, ticks = [0.0,1.0])
@@ -339,7 +346,13 @@ def PlaneProjector_Plot(TBP, TBP1, pathAxis, data3):
         plt.savefig(identifier + '/' + identifier + '_bands_planeproj_' + str_path + pformat, dpi = resol)
     fig3.show()        
 
+#--------------------------------------------------------------------------------------------------------------------------
 # MAIN
+#------------------------------------------------------------------------------------
+# NOTE : At moment, this component allows for computing the total and projected onto
+# planes band structures for cubic and hexagonal systems with arbitrary bands 
+# manifols. In the special case of cubic systems with t2g manifold, such as STO and
+# KTO, the projections onto different orbitals is available.    
 #####################################################################################
 printlog('\n')
 printlog('=========================================================================')
@@ -380,8 +393,9 @@ if plane1 < 0 or plane1 > L-1: # Checking if the values for planes projection ar
     printlog('initial_plane must be between 0 and L-1', level = 'e')
 if plane2 < plane1 or plane2 > L:
     printlog('final_plane cannot be less than initial_plane and cannot be greater than L', level = 'e')
-
-if face == '100': # Checking if the band path is an accepted one
+#-------------------------------------------------------------------------------------------
+# Checking if the band path is an accepted one according to the confinement direction (face)
+if face == '100': 
     try:
         path = BPM.BandPath(str_path, BPM.CellGenerator(material, face, a0), k_points)
     except:
@@ -397,19 +411,19 @@ if face == '111':
     except:
         printlog('%s is an invalid path. Special points are G,K and M.' % str_path, level = 'e')
 
-if method != 'vectorized' and method != 'iterable':
+if face == '001h':
+    try:
+        path = BPM.BandPath(str_path, BPM.CellGenerator(material, face, a0), k_points)
+    except:
+        printlog('%s is an invalid path. Special points are G,K and M.' % str_path, level = 'e')
+#-------------------------------------------------------------------------------------------        
+if method != 'vectorized' and method != 'iterable': # checking the selected method
     printlog("%s is an invalid method. Available methods are 'vectorized' and 'iterable'." % method, level = 'e')
-
-if band_task not in [0,1,2,3]:
-    printlog('%s is an invalid option' % band_task, level = 'e')
-    
-if N_BANDS > 6*L:
-    printlog('Number of bands required exceed the total bands in the problem!', level = 'e')
-if N_BANDS < 1:
-    printlog('The number of bands must be between 1 and 6*number_of_planes!', level = 'e')
-
 #--------------------------------------------------------------------------------------------------------
-# Define the k-points using the path
+if band_task not in [0,1,2,3]: # checking if task selected is correct
+    printlog('%s is an invalid option' % band_task, level = 'e')  
+#--------------------------------------------------------------------------------------------------------
+# defining the k-points using the path
 pathAxis = path.get_linear_kpoint_axis()
 kpts = path.kpts
 dict_task = {0: 'total_bandstructure', 1:'orbital_character', 2:'plane_projection', 3:'total_bands/orb_character/plane_proj'}
@@ -431,92 +445,126 @@ printlog('\n')
 
 start = t.time() # general time reference
 #--------------------------------------------------------------------------------------
+# checking if the number of bands to compute is correct
+if N_BANDS > NWANN*L:
+    printlog('Number of bands required exceed the total bands in the problem!', level = 'e')
+if N_BANDS < 1:
+    printlog('The number of bands must be between 1 and 6*number_of_planes!', level = 'e')
+#--------------------------------------------------------------------------------------
 # files loading and Wannier separation
 printlog('Loading files...')
-Z_7 = np.loadtxt('./Hr' + material + face + '/Z_7.dat')
-Z_6 = np.loadtxt('./Hr' + material + face + '/Z_6.dat')
-Z_5 = np.loadtxt('./Hr' + material + face + '/Z_5.dat')
-Z_4 = np.loadtxt('./Hr' + material + face + '/Z_4.dat')
-Z_3 = np.loadtxt('./Hr' + material + face + '/Z_3.dat')
-Z_2 = np.loadtxt('./Hr' + material + face + '/Z_2.dat')
-Z_1 = np.loadtxt('./Hr' + material + face + '/Z_1.dat')
-Z0 = np.loadtxt('./Hr' + material + face + '/Z0.dat')
+DD  = {} # dictionary to save the r-space Hamiltonian elements separated by planes
+for z in os.listdir('./Hr' + material + face):
+    Z = np.loadtxt('./Hr' + material + face + '/' + z)
+    DD[z.split('.')[0]] = BPM.Wann_Sep(Z, NWANN)
 
-D_7 = BPM.Wann_Sep(Z_7)   # Separation of the <Pw|H|Pw'> for the plane P  
-D_6 = BPM.Wann_Sep(Z_6)   # and the Wannier functions w, w'
-D_5 = BPM.Wann_Sep(Z_5)
-D_4 = BPM.Wann_Sep(Z_4)
-D_3 = BPM.Wann_Sep(Z_3)
-D_2 = BPM.Wann_Sep(Z_2)
-D_1 = BPM.Wann_Sep(Z_1)
-D0 = BPM.Wann_Sep(Z0)
+printlog("Transforming <0w|H|Rw'> to k-space...") # 2D Fourier transform of the <0 w|H|Rxy+Rz w'> elements
+printlog("It could take a while...")
+t0 = t.time()
+DDT = {} # dictionary to save the k-space Hamiltonian elements
+for key, val in DD.items(): # creating empty list inside DDT to set the size
+            DDT['T_' + key] = []
+
+for key, val in DD.items(): # filling DDT with the 2D Fourier transformed Hamiltonian elements
+            DDT['T_' + key] = BPM.Hopping2D(kpts, val)
+
+H = BPM.Quasi2DHamiltonian(DDT, L, NWANN) # initializing the Quasi2D Hamiltonian instance
+BPM.Quasi2DHamiltonian.set_parameters(T, F_LEVEL, len(kpts), HOL)
+printlog('Done!')
+printlog('Time spent: ' + "{:.2f}".format(t.time()-t0) + ' seg')
+printlog('\n')
 #--------------------------------------------------------------------------------------
-# 2D Fourier transform of the <Pw|H|Pw'> elements
-printlog("Transforming <0w|H|Rw'> to k-space...")
-T_7 = BPM.Hopping2D(kpts,D_7)    
-T_6 = BPM.Hopping2D(kpts,D_6)
-T_5 = BPM.Hopping2D(kpts,D_5)
-T_4 = BPM.Hopping2D(kpts,D_4)
-T_3 = BPM.Hopping2D(kpts,D_3)
-T_2 = BPM.Hopping2D(kpts,D_2)
-T_1 = BPM.Hopping2D(kpts,D_1)
-T0 = BPM.Hopping2D(kpts,D0)
-printlog('Done!')    
-
-BPM.Quasi2DHamiltonian.set_parameters(T,F_LEVEL,len(kpts))
-H = BPM.Quasi2DHamiltonian(T_7, T_6, T_5, T_4, T_3, T_2, T_1, T0, L)
-
-V = BPM.PotentialEnergy(L, bc1, bc2)
-V.update_potential(TBP.T[1])
-
-
+# Inicializating potential energy
+V = BPM.PotentialEnergy(L, bc1, bc2) # initializing potential instance
+V.update_potential(TBP.T[1]) # updating the potential instance with the SC potential values
+#--------------------------------------------------------------------------------------
+# creating Hamiltonian tensor
 if method == 'vectorized':
-    HK = H.HamiltonianTensor()
+    HK = H.HamiltonianTensor(NWANN) 
 if method == 'iterable':
     HT = []
     for i in range(k_points):
         HT.append(H.HamiltonianMatrix(i))
     HK = np.array(HT)
-
-   
-if band_task == 0:
-    printlog('\n')
-    printlog('Band structure calculation...') 
-    result0 = BPM.BandCalculation(HK, V.to_tensor(), N_BANDS)
-    Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
-    printlog('Done!')
-       
-if band_task == 1:
-    printlog('\n')
-    printlog('Band structure calculation with orbital character...') 
-    result = BPM.BandCalc_OrbitalChar(HK, V.to_tensor(), L, N_BANDS)
-    Band_Plot_TriColor(result[0], result[1], result[2], result[3], pathAxis, data['BAND_STRUCTURE']['ORBITAL_CHARACTER'])
-    printlog('Done!')
+#--------------------------------------------------------------------------------------
+# First, the system is classified by manifold, the by the task to be performed
+if manifold == "t2g":   
+    if band_task == 0:
+        printlog('\n')
+        printlog('Band structure calculation...') 
+        result0 = BPM.BandCalculation_t2g(HK, V.to_tensor(), N_BANDS)
+        Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
+        printlog('Done!')
            
-if band_task == 2:
-    printlog('\n')
-    printlog('Band structure calculation with projections onto planes...')
-    result2 = BPM.PlaneProjector(HK, V.to_tensor(), L, plane1, plane2, N_BANDS)
-    PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
-    printlog('Done!')
+    if band_task == 1:
+        printlog('\n')
+        printlog('Band structure calculation with orbital character...') 
+        result = BPM.BandCalc_OrbitalChar_t2g(HK, V.to_tensor(), L, N_BANDS)
+        Band_Plot_TriColor(result[0], result[1], result[2], result[3], pathAxis, data['BAND_STRUCTURE']['ORBITAL_CHARACTER'])
+        printlog('Done!')
+               
+    if band_task == 2:
+        printlog('\n')
+        printlog('Band structure calculation with projections onto planes...')
+        result2 = BPM.PlaneProjector_t2g(HK, V.to_tensor(), L, plane1, plane2, N_BANDS)
+        PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
+        printlog('Done!')
+    
+    if band_task == 3:
+        printlog('\n')
+        printlog('Band structure calculation...') 
+        result0 = BPM.BandCalculation_t2g(HK, V.to_tensor(), N_BANDS)
+        Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
+        printlog('Done!')
+        printlog('\n')
+        printlog('Band structure calculation with orbital character...') 
+        result = BPM.BandCalc_OrbitalChar_t2g(HK, V.to_tensor(), L, N_BANDS)
+        Band_Plot_TriColor(result[0], result[1], result[2], result[3], pathAxis, data['BAND_STRUCTURE']['ORBITAL_CHARACTER'])
+        printlog('Done!')
+        printlog('\n')
+        printlog('Band structure calculation with projections onto planes...')
+        result2 = BPM.PlaneProjector_t2g(HK, V.to_tensor(), L, plane1, plane2, N_BANDS)
+        PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
+        printlog('Done!')
 
-if band_task == 3:
-    printlog('\n')
-    printlog('Band structure calculation...') 
-    result0 = BPM.BandCalculation(HK, V.to_tensor(), N_BANDS)
-    Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
-    printlog('Done!')
-    printlog('\n')
-    printlog('Band structure calculation with orbital character...') 
-    result = BPM.BandCalc_OrbitalChar(HK, V.to_tensor(), L, N_BANDS)
-    Band_Plot_TriColor(result[0], result[1], result[2], result[3], pathAxis, data['BAND_STRUCTURE']['ORBITAL_CHARACTER'])
-    printlog('Done!')
-    printlog('\n')
-    printlog('Band structure calculation with projections onto planes...')
-    result2 = BPM.PlaneProjector(HK, V.to_tensor(), L, plane1, plane2, N_BANDS)
-    PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
-    printlog('Done!')
-  
+
+elif manifold == 'other':
+    skip_bands = data['BAND_STRUCTURE']['skip_bands'] # this parameter is to skip lower energy bands and reduce 
+                                            # computational cost. The plotted bands will range (skip_bands, skip_bands + N_BANDS) 
+    if band_task == 0:
+        printlog('\n')
+        printlog('Band structure calculation...') 
+        result0 = BPM.BandCalculation_gen(HK, V.to_tensor(nwann = NWANN), skipbands = skip_bands, nbands = N_BANDS)
+        Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
+        printlog('Done!')
+           
+    if band_task == 1:
+        printlog('\n')
+        printlog('Band structure calculation with projections onto an arbitrary MLWF is not implemented yet.', 'e')
+        printlog('\n')
+           
+    if band_task == 2:
+        printlog('\n')
+        printlog('Band structure calculation with projections onto planes...')
+        result2 = BPM.PlaneProjector_gen(HK, V.to_tensor(nwann = NWANN), L, plane1, plane2, skipbands = skip_bands, nbands = N_BANDS)
+        PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
+        printlog('Done!')
+    
+    if band_task == 3:
+        printlog('\n')
+        printlog('Band structure calculation...') 
+        result0 = BPM.BandCalculation_gen(HK, V.to_tensor(nwann = NWANN), skipbands = skip_bands, nbands = N_BANDS)
+        Band_Plotter(result0, pathAxis, data['BAND_STRUCTURE']['TOTAL_BANDS'])
+        printlog('Done!')
+        printlog('\n')
+        printlog('Band structure calculation with projections onto planes...')
+        result2 = BPM.PlaneProjector_gen(HK, V.to_tensor(nwann = NWANN), L, plane1, plane2, skipbands = skip_bands, nbands = N_BANDS)
+        PlaneProjector_Plot(result2[0], result2[1], pathAxis, data['BAND_STRUCTURE']['PLANE_PROJECTION'])
+        printlog('Done!')
+
+else:
+    printlog("%s is an invalid mode. Valid modes are 't2g' and 'other'." % manifold, level = 'e')
+        
 end = t.time()
 printlog('Total time spent: ' + "{:.2f}".format(end-start) + '  seg')
 printlog('\n')
