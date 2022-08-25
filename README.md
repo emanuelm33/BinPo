@@ -1,5 +1,5 @@
 ![Logo](https://user-images.githubusercontent.com/94184924/156950182-06b978a4-9302-460f-bb24-5f78c3ecafc8.png)
-## BinPo: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
+## BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
 
 ### Version 1.1.0
 
@@ -147,7 +147,9 @@ filtering of r-space Hamiltonian, discretized along normal direction according t
  _~/HrSTO111_ after a succesful pre-processing.
 			
 **NOTE1:** It should be noticed that you need to execute this step just once for each W90 file/material/direction combination.
+
 **NOTE2:** For hexagonal systems rotations are not allowed, so that the (001) is the confinement direction. 
+
 
 ###    STEP 2: SC-potential calculation:
 		
@@ -164,12 +166,12 @@ calculation. You can quickly check the output file by means of _BP-fast_plot.py_
 				
 ###    STEP 3: post-processing step:
 
-NOTE: Each of the post-processing components needs a previous SC-potential calculation whose solution will be accessed by the specific 
+**NOTE:** Each of the post-processing components needs a previous SC-potential calculation whose solution will be accessed by the specific 
 identifier.
 
 Recall the SC solutions and their features from any of the post-processing components (_BP-bands.py_, 
 _BP-energy_slices.py_, etc.). Check the parameters needed in each particular case. All new runs will be automatically logged in the 
-file ~/identifier/identifier.log. For example, to compute the bandstructure along KGK path (ph), run the line below. In this case, 
+file _~/identifier/identifier.log_. For example, to compute the bandstructure along KGK path (_ph_), run the line below. In this case, 
 the ommited parameters will be taken from _~/conf_files/bands.yaml_ file.
 
 	$ python BP-bands.py -id identifier -ph KGK
