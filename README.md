@@ -1,3 +1,5 @@
+![Logo](https://user-images.githubusercontent.com/94184924/156950182-06b978a4-9302-460f-bb24-5f78c3ecafc8.png)
+
 ## BINPO: A CODE FOR ELECTRONIC PROPERTIES OF 2D ELECTRON SYSTEMS
 
 ### Version 1.1
