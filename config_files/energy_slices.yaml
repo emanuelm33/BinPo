@@ -2,9 +2,9 @@
 #==================INPUT=========================
 ---
 ENERGY_SLICES :
-                   identifier : "ktoC_3"
-                   sqrt_kgrid_numbers : 600
-                   kbox_factor : 0.5
+                   identifier : "sto_01"
+                   sqrt_kgrid_numbers : 400
+                   kbox_factor : 0.6
                    kbox_shift : [0.0,0.0]
                    win_energy_calc : 0.04
                    batches : 100
