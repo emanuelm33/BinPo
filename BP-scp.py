@@ -28,8 +28,8 @@
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.1
-__date__ = "August 9, 2022"
+__version__ = 1.0
+__date__ = "January 14, 2022"
 
 import os
 import numpy as np
@@ -55,9 +55,8 @@ description = "SELF-CONSISTENT POTENTIAL ENERGY (V) CALCULATION"
 epilog = "By default, arguments not specified are taken from './config_files/scp.yaml'."
  
 msj_id = "Identifier for the calculation. String. It is unique and can be recalled later in post-processing."
-msj_mat = "Name of the material. String. It must match the corresponding key in materials dictionary of BPdatabase.py module."
-msj_fc = "Confinement direction 'hkl'. String. Allowed values for cubic systems: '100' ('010','001'), '110' ('011','101'), '111'."\
-    " For hexagonal system it must be '001h'."
+msj_mat = "Name of the material. String. It could be 'STO' or 'KTO'."
+msj_fc = "Confinement direction 'hkl'. String. Allowed values: '100' ('010','001'), '110' ('011','101'), '111'."
 msj_T = "Temperature in K. Float. Allowed range: [0.001, 315.0]"
 msj_L = "Number of planes stacked along normal direction. Integer. Allowed range: [10, 200]."
 msj_Nk = "Square root of the total number of points in 2D k-grid. Integer. It must be > 10."
@@ -122,18 +121,12 @@ bc2 = args.bc2 # boundary condition at z = L-1 (i. e. bulk)
 dE = args.de #shift from Fermi level
 permitt_model = args.pm #permittivity model
 Fmix =  args.mf# mixing factor
-#----------------------------------------------------------------------------------
+#---------------------------------------------------------------------
 # These parameters are loaded from conf_preproc.yaml file!!
 filename = BPD.materials[material]['Wannier_file']
 a0 = BPD.materials[material]['lattice_parameter'] # lattice parameter of cubic structure
-sgeom = BPD.materials[material]['unit-cell']
-if sgeom == 'hexagonal': # if the lattice is hexagonal, it looks for the c parameter
-    c0 = BPD.materials[material]['lattice_parameter_c']
-LUL = BPD.materials[material]['lowest_unoccupied_level'] # lowest unoccupied level (conduction band minimum)
-HOL = BPD.materials[material]['highest_occupied_level'] # highest occupied level (valence band maximum)
-NWANN = int(BPD.materials[material]['Wannier_functions_number']) # number of elements in the MLWF basis
-manifold = BPD.materials[material]['manifold'] # manifold of the band structure involved 
-#----------------------------------------------------------------------------------
+LUL = BPD.materials[material]['lowest_unoccupied_level'] # lowest unoccupied level
+#---------------------------------------------------------------------
 # These parameters are loaded from scp_preproc.yaml file!!
 visualization = data['SCP_CALCULATION']['potential_live_visualization'] # whether or not live visualization of V(z)
 err_visualization = data['SCP_CALCULATION']['error_live_visualization'] # whether or not live visualization of error vs iterations
@@ -146,8 +139,9 @@ method = data['SCP_CALCULATION']['ADVANCED_PARAMETERS']['Total_Hk_method'] # met
     
 Neumann_condition = data['SCP_CALCULATION']['Neumann_at_bulk'] # use or not Neumann b. c. at bottom-most layer
 k_shift = data['SCP_CALCULATION']['k_shift'] # Displacements of the k-grid
+
 #####################################################################################
-# In the case a fixed background charge is used
+# In the case that a fixed background charge is used
 use_fixQ = data['SCP_CALCULATION']['ADVANCED_PARAMETERS']['cons_charge_background']
 Qdef = data['SCP_CALCULATION']['ADVANCED_PARAMETERS']['charge_per_site']
 Qextent = data['SCP_CALCULATION']['ADVANCED_PARAMETERS']['charge_extension']
@@ -168,39 +162,25 @@ printlog('\n')
 printlog('Author: Emanuel A. Martinez, Universidad Complutense de Madrid, Spain.')
 printlog('\n')
 # Checking one by one if the values for the input parameters are correct
-
-if material not in BPD.materials.keys():
+if material != 'STO' and material != 'KTO':
     printlog("%s is and invalid material name!", level = 'e')
-
 if face_in not in ['100','010','001','110','101','011','111']:
     printlog('%s are invalid Miller indices' % face_in, level = 'e')
-
-Tmin, Tmax = 1.0e-3, 315.0 # limits for temperature
-if T < Tmin or T > Tmax :
+if T < 1.0e-3 or T > 315.0 :
     printlog('temperature is out of allowed range!', level = 'e')
-
 if a0 <= 0:
-    printlog('lattice parameter must be positive!', level = 'e')
-
-Lmin, Lmax = 6, 250 # Limits for the slab extent
-if L <= Lmin or L > Lmax :
+    printlog('lattice parameter must be positive!', level = 'e')  
+if L <= 10 or L > 200 :
     printlog('number_of_planes must range from 10 to 200!', level = 'e')
+if Nk < 10:
+    printlog('sqrt_kgrid_numbers must be greater than 10!', level = 'e')
+if bc1 >= -1e-3 or bc1 <= -1.0:
+    printlog('BC1_topmost_layer must range from -1 to -0.001 eV', level = 'e')
+if bc2 < (bc1 + 0.01*abs(bc1)) or bc2 > 3*abs(bc1):
+    printlog('BC2_in_bulk must range from BC1 to 3*|BC1|!', level = 'e')
+#if dE < 0.0 or dE > 0.02:
+#    printlog('shift_from_LUL must be between 0 and 0.02 eV', level = 'e')
 
-Nk_min = 10 # lower limit for Nk
-if Nk < Nk_min:
-    printlog('sqrt_kgrid_numbers must be greater than ' + str(Nk_min), level = 'e')
-
-bc1_min, bc1_max = -1e-3, -2.0 # limits for bc1   
-if bc1 >= bc1_min or bc1 <= bc1_max:
-    printlog('BC1_topmost_layer must range from ' + str(bc1_min) + ' to ' + str(bc1_max) + ' eV', level = 'e')
-    
-if bc2 < bc1: # constraint on bc2 value
-     printlog('BC2_in_bulk must be greater than bc1!', level = 'e')
-      
-if abs(dE) > abs(LUL-HOL): # constraint on shift_from_LUL value
-    printlog('shift_from_LUL is too high!', level = 'e')
-
-# check if the permittivity input is correct --------------------------------------------
 eps_list = ['Cop', 'Ang', None]
 if permitt_model not in eps_list and 'cte' not in permitt_model: # Check if permittivity is in the list of available ones
     E = 100 # test value for checking if permittivity expression is correct.
@@ -209,25 +189,19 @@ if permitt_model not in eps_list and 'cte' not in permitt_model: # Check if perm
     except:
         printlog('%s is invalid model or expression! Please, make sure of either selecting a permittivity'\
                          ' from the available ones or correctly using Python syntax!' % permitt_model, level = 'e')
-# ----------------------------------------------------------------------------------------
-if method != 'vectorized' and method != 'iterable': # checking the selected method
+
+if method != 'vectorized' and method != 'iterable':
     printlog("%s is an invalid method. Available methods are 'vectorized' and 'iterable'." % method, level = 'e')
-# ---------- if a fixed background charge is used-----------------------------------------
+
 if use_fixQ == True:
     if Qextent < 0 or Qextent > L:
         printlog('Fixed density background out of valid range!', level = 'e')
     if Qdef >= 0.05:
         printlog('The fixed charge per site seems to be very high!', level = 'w')
-#-----------------------------------------------------------------------------------------
-#-----------------------------------------------------------------------------------------
 # Creating specific quantities directly from parameters
 ef = LUL + dE # Fermi level in eV
 Kmesh = BPM.Kmeshgrid(Nk, delta_kx = k_shift[0], delta_ky = k_shift[1]) # Generation of k-grid
-
-if sgeom == 'hexagonal': # checking geometry to create a crystal instance
-    crystal = BPM.CrystalFeatures(face_in, a0, material, c = c0, sgeom = sgeom) # Initialization of crystal properties
-else:
-    crystal = BPM.CrystalFeatures(face_in, a0, material)
+crystal = BPM.CrystalFeatures(face_in, a0, material) # Initialization of crystal properties
 face = crystal.face # It turns the indices into an unique ones per face ['100', '110', '111']
 
 printlog('---------------------------------------------------------------------')
@@ -257,7 +231,7 @@ printlog('\tIdentifier : ' + identifier)
 printlog('\tSurface : ' + material + '(' + face + ')')
 printlog('\tNumber of planes : ' + str(L))
 printlog('\tK-grid : ' + str(Nk) + ' x ' + str(Nk))
-printlog('\t\tK-shift : (' + str(k_shift[0]) + ', ' + str(k_shift[1]) + ')')
+printlog('\t\tK-shift : (' + str(k_shift[0]) + ' ,' + str(k_shift[1]) + ')')
 printlog('\tBoundary conditions : ')
 printlog('\t\tV[0] = ' + str(bc1) + ' eV')
 printlog('\t\tV[L-1] = ' + str(bc2) + ' eV')
@@ -275,43 +249,56 @@ if use_fixQ == True:
 printlog('\tInitial V shape : ' + Vinitial)
 printlog('\n')
 start = t.time() # general time reference
-Fmix_warn1, Fmix_warn2 = 0.05, 0.4 # suggested limit values for the mixing factor
-if Fmix < Fmix_warn1:
+if Fmix < 0.05:
     printlog("A mixing factor of %s could be too small. The total number of iterations could considerably increase" % Fmix, level = 'w')
-if Fmix > Fmix_warn2:
+if Fmix > 0.4:
     printlog("A mixing factor of %s could be too big. It could result in a bouncing potential without reaching convergence"\
              " or requiring a large number of iterations" % Fmix, level = 'w')
 #--------------------------------------------------------------------------------------
 # files loading and Wannier separation
 printlog('Loading files...')
-DD  = {} # dictionary to save the r-space Hamiltonian elements separated by planes
-for z in os.listdir('./Hr' + material + face):
-    Z = np.loadtxt('./Hr' + material + face + '/' + z)
-    DD[z.split('.')[0]] = BPM.Wann_Sep(Z, NWANN)
+Z_7 = np.loadtxt('./Hr' + material + face + '/Z_7.dat')
+Z_6 = np.loadtxt('./Hr' + material + face + '/Z_6.dat')
+Z_5 = np.loadtxt('./Hr' + material + face + '/Z_5.dat')
+Z_4 = np.loadtxt('./Hr' + material + face + '/Z_4.dat')
+Z_3 = np.loadtxt('./Hr' + material + face + '/Z_3.dat')
+Z_2 = np.loadtxt('./Hr' + material + face + '/Z_2.dat')
+Z_1 = np.loadtxt('./Hr' + material + face + '/Z_1.dat')
+Z0 = np.loadtxt('./Hr' + material + face + '/Z0.dat')
 
-printlog("Transforming <0w|H|Rw'> to k-space...") # 2D Fourier transform of the <0 w|H|Rxy+Rz w'> elements
-printlog("It could take a while...")
+D_7 = BPM.Wann_Sep(Z_7) # Separation of the <Pw|H|Pw'> for the plane P 
+D_6 = BPM.Wann_Sep(Z_6) # and the Wannier functions w, w'
+D_5 = BPM.Wann_Sep(Z_5)
+D_4 = BPM.Wann_Sep(Z_4)
+D_3 = BPM.Wann_Sep(Z_3)
+D_2 = BPM.Wann_Sep(Z_2)
+D_1 = BPM.Wann_Sep(Z_1)
+D0 = BPM.Wann_Sep(Z0)
+#--------------------------------------------------------------------------------------
+# 2D Fourier transform of the <Pw|H|Pw'> elements
+printlog("Transforming <0w|H|Rw'> to k-space...")
 t0 = t.time()
-DDT = {} # dictionary to save the k-space Hamiltonian elements
-for key, val in DD.items(): # creating empty list inside DDT to set the size
-            DDT['T_' + key] = []
-
-for key, val in DD.items(): # filling DDT with the 2D Fourier transformed Hamiltonian elements
-            DDT['T_' + key] = BPM.Hopping2D(Kmesh, val)
-
-H = BPM.Quasi2DHamiltonian(DDT, L, NWANN) # initializing the Quasi2D Hamiltonian instance
-BPM.Quasi2DHamiltonian.set_parameters(T, ef, Nk*Nk, HOL)
+T_7 = BPM.Hopping2D(Kmesh, D_7)
+T_6 = BPM.Hopping2D(Kmesh, D_6)
+T_5 = BPM.Hopping2D(Kmesh, D_5)
+T_4 = BPM.Hopping2D(Kmesh, D_4)
+T_3 = BPM.Hopping2D(Kmesh, D_3)
+T_2 = BPM.Hopping2D(Kmesh, D_2)
+T_1 = BPM.Hopping2D(Kmesh, D_1)
+T0 = BPM.Hopping2D(Kmesh, D0)
+#--------------------------------------------------------------------------------------
+# Initializing the Hamiltonian
+BPM.Quasi2DHamiltonian.set_parameters(T, ef, Nk*Nk)
+H = BPM.Quasi2DHamiltonian(T_7, T_6, T_5, T_4, T_3, T_2, T_1, T0, L)
 printlog('Done!')
 printlog('Time spent: ' + "{:.2f}".format(t.time()-t0) + ' seg')
 printlog('\n')
-
 #--------------------------------------------------------------------------------------
 t1 = t.time()
 # If the method to generate the Hamiltonian H is 'vectorized' the whole H is created at once
-# it is faster but more memory-consuming. An alternative is the 'iterable' method (see below)
 if method == 'vectorized':
     printlog('Constructing the slab Hamiltonian...')
-    Hk = H.HamiltonianTensor(NWANN)
+    Hk = H.HamiltonianTensor()
     printlog('Done!')
     printlog('Time spent: ' + "{:.2f}".format(t.time()-t1) + ' seg')
     printlog('\n')
@@ -325,19 +312,17 @@ printlog('Done!')
 printlog('\n')
 #--------------------------------------------------------------------------------------
 # whether or not to use the live visualizations
-if visualization == True: # potential live visualization
+if visualization == True:
     plt.style.use('ggplot')
     fig1 = plt.figure()
     ax1 = fig1.add_subplot(1,1,1)
     plt.subplots_adjust(left = 0.14, bottom = 0.14)
-    tsleep1 = 0.5 # sleep time for interactive plot
     
-if err_visualization == True: # error live visualization
+if err_visualization == True:
     plt.style.use('ggplot')
     fig2 = plt.figure(figsize = (3,3))
     ax2 = fig2.add_subplot(1,1,1)
-    plt.subplots_adjust(left = 0.2)
-    tsleep2 = 1.0 # sleep time for interactive plot
+    plt.subplots_adjust(left = 0.2)    
 #-------------------------------------------------------------------------------------- 
 # Starting the Tight-Binding Poisson iterations
 err = 1 # We choose an arbitrary initial value for total error
@@ -360,9 +345,9 @@ while err > conv_thr:
     printlog('Starting diagonalization and charge density calculation...')
     # Charge solver is computed according to the method selected
     if method == 'vectorized':
-        rho = BPM.Quasi2DHamiltonian.ChargeSolver(Hk, V, NWANN)
+        rho = BPM.Quasi2DHamiltonian.ChargeSolver(Hk, V)
     if method == 'iterable':
-        rho = BPM.Quasi2DHamiltonian.ChargeSolver2(H, V, NWANN)    
+        rho = BPM.Quasi2DHamiltonian.ChargeSolver2(H, V)      
     printlog('Done!')
     printlog('Time spent: ' + "{:.2f}".format(t.time()-t2) + ' seg')
     printlog('\n')
@@ -372,11 +357,7 @@ while err > conv_thr:
     printlog('\n')
     t3 = t.time()
     printlog('Solving Poisson equation...')
-    Vout, n_iter = V.Poisson_solver(rho ,d_hkl ,A_hkl, 
-                                    neumann_bc2 = Neumann_condition,
-                                    background_Q = use_fixQ,
-                                    site_qdef = Qdef, ext_qdef = Qextent)
-    
+    Vout, n_iter = V.Poisson_solver(rho ,d_hkl ,A_hkl, neumann_bc2 = Neumann_condition, background_Q = use_fixQ, site_qdef = Qdef, ext_qdef = Qextent)
     printlog('Iteration converged after ' + str(n_iter) + ' steps.')
     printlog('Time spent: ' + "{:.2f}".format(t.time()-t3) + ' seg')
     printlog('\n')
@@ -393,13 +374,13 @@ while err > conv_thr:
     printlog('\n')
     
     if visualization == True:
-        BPM.SnapPlotter(fig1, ax1, V, Vin, Vout, delta_t, err, tsleep1)
+        BPM.SnapPlotter(fig1, ax1, V, Vin, Vout, delta_t, err, 0.5)
         
     if err_visualization == True:
         Lerr.append(err)
-        BPM.SnapError(fig2, ax2, Lerr, conv_thr, tsleep2)
+        BPM.SnapError(fig2, ax2, Lerr, conv_thr, 1.0)
     
-    if err < conv_thr: # If self-consistent is achieved the following quantities are saved 
+    if err < conv_thr: # If SC is achieved the following quantities are saved 
         V.update_potential(Vout)
         Lout = []
         Lout.append(np.arange(V.L)) # planes
@@ -424,14 +405,7 @@ while err > conv_thr:
                      'Fermi_level' : ef,
                      'BC1_topmost_layer' : bc1,
                      'BC2_in_bulk' : bc2,
-                     'system_geometry' : sgeom,
-                     'Wannier_functions_number': NWANN, 
-                     'highest_occupied_level' : HOL,
-                     'lowest_unoccupied_level' : LUL,
-                     'manifold' : manifold,
                      }
-        if sgeom == 'hexagonal':
-            dict_file['lattice_parameter_c'] = c0
         with open(identifier + '/' + identifier + '.yaml', 'w') as file:
             documents = yaml.dump(dict_file, file)
         break
@@ -442,7 +416,7 @@ while err > conv_thr:
     V.update_potential(Vnew) # Update the PotentialEnergy intance  
     #==============================================================
     
-    if V.counter == MAX_ITER: # If the self-consistency is not achieved, a runtime error will raise!!
+    if V.counter == MAX_ITER:
         printlog('\n')    
         end = t.time()
         printlog('============================================================================')
@@ -453,7 +427,8 @@ while err > conv_thr:
         printlog('============================================================================')
         printlog('Runtime Error : Convergence not achieved after ' + str(int(MAX_ITER)) + ' iterations.')
         raise RuntimeError('Convergence not achieved after ' + str(int(MAX_ITER)) + ' iterations.')
-  
+
+   
 printlog('\n')    
 end = t.time()
 printlog('============================================================================')
@@ -464,3 +439,4 @@ printlog('Finishing on ' + now2.strftime("%d%b%Y") + ' at ' + now2.strftime("%H:
 printlog('CALCULATION DONE!')
 printlog('============================================================================')
 printlog('\n')
+

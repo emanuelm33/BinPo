@@ -22,15 +22,14 @@
  DESCRIPTION:
      ENVELOPE WAVEFUNCTIONS CALCULATION AT GAMMA POINT
      BP-envelope_wfs.py allows for obtaining and visualizing the envelope
-     wavefunctions around the gamma point. At present, this component is 
-     only available for cubic systems with t2g manifold, such as STO and KTO.
+     wavefunctions around the gamma point.
 """
 
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.1
-__date__ = "August 9, 2022"
+__version__ = 1.0
+__date__ = "January 14, 2022"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -41,7 +40,6 @@ import datetime as dt
 import argparse
 import yaml
 import logging
-import os 
 
 # Loading the configuration files to set parameters not defined by terminal
 #--------------------------------------------------------------------------------------------------------------------------
@@ -91,13 +89,9 @@ material = params['material'] # material
 face = params['crystal_face'] # crystal face
 a0 = params['lattice_parameter'] # lattice parameter of cubic structure 
 T = params['temperature'] # temperature in K
-bc1 = params['BC1_topmost_layer'] # bc value for potential V at the top-most layer
-bc2 = params['BC2_in_bulk'] # bc value for V at the bottom-most layer
-ef = params['Fermi_level'] # Fermi level in eV as LUL + dE
-manifold = params['manifold'] # type of manifold
-NWANN = int(params['Wannier_functions_number']) # number of elements in the MLWF basis
-HOL = float(params['highest_occupied_level']) # highest occupied level (valence band maximum)
-sgeom = params['system_geometry'] # unit-cell symmetry
+bc1 = params['BC1_topmost_layer']
+bc2 = params['BC2_in_bulk']
+ef = params['Fermi_level'] #Fermi level in eV as LUL + dE
 #--------------------------------------------------------------------------------------------------------------------------
 # Creating a logger object for the current program
 log_path = identifier + '/' + identifier + '.log'
@@ -120,8 +114,7 @@ def printlog(text, level = 'i'): # Simple function for general logging
         raise ValueError(text)  
 #--------------------------------------------------------------------------------------------------------------------------
 def EnvelopePlot(z_pl, pot_z, wfs_array, data4):
-    # unfolding data4 dictionary to load several details
-    # for the matplotlib plot
+    # Unfolding dictionary data4
     plotstyle = data4['PLOT_ADJUST']['plotstyle']
     fig_size = data4['PLOT_ADJUST']['fig_size']
     c_v = data4['PLOT_ADJUST']['color_V']
@@ -177,9 +170,6 @@ def EnvelopePlot(z_pl, pot_z, wfs_array, data4):
     return None
 #--------------------------------------------------------------------------------------------------------------------------
 # MAIN
-#------------------------------------------------------------------------------------
-# NOTE : At moment, this component is only available for cubic ABO3 systems
-# with t2g manifold, such as STO and KTO   
 #####################################################################################
 printlog('\n')
 printlog('=========================================================================')
@@ -198,7 +188,7 @@ printlog('---------------------------------------------------------------------'
 printlog('\n')
 printlog('BinPo, TB-Poisson Solver for 2DES\n'\
  'Copyright (C) 2021 BinPo Team\n\n'\
- 'BP-envelope_wfs.py is part of BinPo.\n\n'\
+ 'BP-energy_slices.py is part of BinPo.\n\n'\
  'BinPo is free software: you can redistribute it and/or modify\n'\
  'it under the terms of the GNU General Public License as published by\n'\
  'the Free Software Foundation, either version 3 of the License, or\n'\
@@ -211,11 +201,9 @@ printlog('BinPo, TB-Poisson Solver for 2DES\n'\
  'along with BinPo. See ~/COPYING file or <https://www.gnu.org/licenses/>.')
 printlog('\n')
 #-------------------------------------------------------------------------------------
-# This defines a very little area around the gamma point, with a sampling of samp_pts x samp_pts 
-# points. You can modify these values if necessary
-BZ1_frac = 1e-3
-samp_pts = 5
-Kmesh = BPM.Kmeshgrid(samp_pts, scale = BZ1_frac) 
+# This defines a very little area around the gamma point, with a sampling of 5x5 points
+# You can modify these values if necessary
+Kmesh = BPM.Kmeshgrid(5, scale = 0.001) 
 #------------------------------------------------------------------------------------- 
 now = dt.datetime.now()
 printlog('DETAILS:')
@@ -231,52 +219,58 @@ printlog('Starting on ' + now.strftime("%d%b%Y") + ' at ' + now.strftime("%H:%M:
 printlog('---------------------------------------------------------------------')
 printlog('\n')
 
-if manifold != 't2g':
-    printlog('\n')
-    printlog('Orbital decomposition of the electron density onto an arbitrary set of MLWFs is not implemented yet.', 'e')
-    printlog('\n')
-
 start = t.time() # general time reference
-#############################################################################################################
-# files loading and Wannier separation
-printlog('Loading files...')
-DD  = {} # dictionary to save the r-space Hamiltonian elements separated by planes
-for z in os.listdir('./Hr' + material + face):
-    Z = np.loadtxt('./Hr' + material + face + '/' + z)
-    DD[z.split('.')[0]] = BPM.Wann_Sep(Z, NWANN)
 
-printlog("Transforming <0w|H|Rw'> to k-space...") # 2D Fourier transform of the <0 w|H|Rxy+Rz w'> elements
-printlog("It could take a while...")
+printlog('Loading files...')
+Z_7 = np.loadtxt('./Hr' + material + face + '/Z_7.dat')
+Z_6 = np.loadtxt('./Hr' + material + face + '/Z_6.dat')
+Z_5 = np.loadtxt('./Hr' + material + face + '/Z_5.dat')
+Z_4 = np.loadtxt('./Hr' + material + face + '/Z_4.dat')
+Z_3 = np.loadtxt('./Hr' + material + face + '/Z_3.dat')
+Z_2 = np.loadtxt('./Hr' + material + face + '/Z_2.dat')
+Z_1 = np.loadtxt('./Hr' + material + face + '/Z_1.dat')
+Z0 = np.loadtxt('./Hr' + material + face + '/Z0.dat')
+
+D_7 = BPM.Wann_Sep(Z_7)    
+D_6 = BPM.Wann_Sep(Z_6)
+D_5 = BPM.Wann_Sep(Z_5)
+D_4 = BPM.Wann_Sep(Z_4)
+D_3 = BPM.Wann_Sep(Z_3)
+D_2 = BPM.Wann_Sep(Z_2)
+D_1 = BPM.Wann_Sep(Z_1)
+D0 = BPM.Wann_Sep(Z0)
+
+printlog("Transforming <0w|H|Rw'> to k-space...")
 t0 = t.time()
 
-DDT = {} # dictionary to save the k-space Hamiltonian elements
-for key, val in DD.items(): # creating empty list inside DDT to set the size
-            DDT['T_' + key] = []
+T_7 = BPM.Hopping2D(Kmesh,D_7)
+T_6 = BPM.Hopping2D(Kmesh,D_6)
+T_5 = BPM.Hopping2D(Kmesh,D_5)
+T_4 = BPM.Hopping2D(Kmesh,D_4)
+T_3 = BPM.Hopping2D(Kmesh,D_3)
+T_2 = BPM.Hopping2D(Kmesh,D_2)
+T_1 = BPM.Hopping2D(Kmesh,D_1)
+T0 = BPM.Hopping2D(Kmesh,D0)
 
-for key, val in DD.items(): # filling DDT with the 2D Fourier transformed Hamiltonian elements
-            DDT['T_' + key] = BPM.Hopping2D(Kmesh, val)
+BPM.Quasi2DHamiltonian.set_parameters(T, ef, len(Kmesh))
+H = BPM.Quasi2DHamiltonian(T_7,T_6, T_5, T_4, T_3, T_2, T_1, T0, L)
+HK = H.HamiltonianTensor()
+V = TBP.T[1]
 
-H = BPM.Quasi2DHamiltonian(DDT, L, NWANN) # initializing the Quasi2D Hamiltonian instance
-BPM.Quasi2DHamiltonian.set_parameters(T, ef, len(Kmesh), HOL)
-printlog('Done!')
-printlog('Time spent: ' + "{:.2f}".format(t.time()-t0) + ' seg')
-printlog('\n')
-#############################################################################################################
-HK = H.HamiltonianTensor(NWANN) # creating Hamiltonian tensor
 
 printlog('Initializing potential energy...')
-V = BPM.PotentialEnergy(L, bc1, bc2) # initializing potential instance
-V.update_potential(TBP.T[1]) # updating the potential instance with the SC potential values
-Hv = V.to_tensor() # creating potential energy tensor
+V = BPM.PotentialEnergy(L, bc1, bc2)
+V.update_potential(TBP.T[1])
+Hv = V.to_tensor()
 printlog('Done!')
 printlog('\n')
 
-Lenerg, Laux = [], [] # auxiliary lists to save the eigenvalues and the envelope wfcs
-env_dict = {} # dictionary to cumulate the envelope wfcs
+Lenerg, Laux = [], []
+env_dict = {}
 for n in range(N):
     env_dict[str(n)] = np.zeros(L+1)
 
-for n in range(N): # getting the Schrodinger equation for the N envelope wfcs required
+for n in range(N):
     for hk in HK: 
         HT = hk + Hv
         w, v = np.linalg.eigh(HT, UPLO = 'L')
@@ -287,15 +281,12 @@ for n in range(N): # getting the Schrodinger equation for the N envelope wfcs re
     Laux.clear()
     printlog('Wavefunction number ' + str(n + 1) + ' : done!')
 
-# preparing the envelope wfcs outputs, by refering them to ef and regulating the size 
-# with the intensity factor I_f
 Lout = np.zeros((N+1,L+1))
 Lout[0] = np.arange(-1,L,1)
 for n in range(N):
     Lout[n+1] = env_dict[str(n)]*I_f + (Lenerg[n] - ef)
     
 printlog('\n')
-# plotting the solution along with the SC-potential to visualize the quantum-well
 EnvelopePlot(TBP.T[0], TBP.T[1], Lout, data['ENVELOPE_WAVEFUNCTIONS'])
 printlog('\n')
 end = t.time()
