@@ -225,9 +225,9 @@ ef = LUL + dE # Fermi level in eV
 Kmesh = BPM.Kmeshgrid(Nk, delta_kx = k_shift[0], delta_ky = k_shift[1]) # Generation of k-grid
 
 if sgeom == 'hexagonal': # checking geometry to create a crystal instance
-    crystal = BPM.CrystalFeatures(face_in, a0, material, c = c0, sgeom = sgeom) # Initialization of crystal properties
+    crystal = BPM.CrystalFeatures(face_in, a0, material, c = c0, manifold = manifold, sgeom = sgeom) # Initialization of crystal properties
 else:
-    crystal = BPM.CrystalFeatures(face_in, a0, material)
+    crystal = BPM.CrystalFeatures(face_in, a0, material, manifold=manifold)
 face = crystal.face # It turns the indices into an unique ones per face ['100', '110', '111']
 
 printlog('---------------------------------------------------------------------')

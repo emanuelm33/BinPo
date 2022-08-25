@@ -254,7 +254,7 @@ class PotentialEnergy:
 ###############################################################################################################################
 class CrystalFeatures:
 
-   def __init__(self, face, a0, material, c = 6.0, sgeom = 'cubic'):
+   def __init__(self, face, a0, material, c = 6.0, manifold = 't2g', sgeom = 'cubic'):
        """
        This class provides basic crystallographic characteristics of the system.
 
@@ -285,9 +285,11 @@ class CrystalFeatures:
 #------------------------------------------------------------------------------------------------------------------------------   
    def interplanar_distance(self):
        """ This method computes the interplanar distance in m."""
-       if self.sgeom == 'cubic':
+       if self.sgeom == 'cubic' and self.manifold == 't2g':
            a1, a2, a3 = np.fromiter(self.face, dtype = int)
            return self.a0/np.sqrt(a1*a1 + a2*a2 + a3*a3)*1e-10 # the factor 1e-10 is to convert Angs to m
+       elif self.sgeom == 'cubic' and self.manifold == 'other':
+           return self.a0*np.sqrt(3)*1e-10
        elif self.sgeom == 'hexagonal':
            return self.c*1e-10
 #------------------------------------------------------------------------------------------------------------------------------
