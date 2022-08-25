@@ -16,23 +16,22 @@ check the Matplotlib documentation at https://matplotlib.org/.
 ### SCP_CALCULATION:
 
 - identifier = String. Identifier for the calculation. It is unique and can be recalled later in post-processing.
-- material = String. Name of the material (cubic perovskite ABO3) to be used. Allowed names: STO, KTO.
+- material = String. Name of the material or system to be used. Allowed names are those contained in BPdatabase.py module.
 - crystal_face = String. Crystal face expressed as string 'hkl'. Allowed values: '100' ('010','001'), '110' 
   ('011','101') and '111'.
-- number_of_planes = Integer. Total number of planes stacked along normal direction. Allowed range: [10, 200].
+- number_of_planes = Integer. Total number of planes stacked along normal direction. Allowed range: [6, 250].
 - shift_from_LUL = Float. Energy shift (dE) from LUL in eV. Used to define the Fermi level as ef = LUL + dE. 
-  Allowed range: [0.0, 0.02].
+  It must be less than gap size, i.e. |LUL-HOL|.
 - BC1_topmost_layer = Float. Dirichlet boundary condition for V in eV at the topmost layer (i.e. V[0]). Allowed 
-  range: [-1, -0.001]. 
-- BC2_in_bulk = Float. Dirichlet boundary condition for V in eV in the bulk (i.e. V[L-1]). Allowed range: 
-  [bc1, 3*|bc1|].
+  range: [-2, -0.001]. 
+- BC2_in_bulk = Float. Dirichlet boundary condition for V in eV in the bulk (i.e. V[L-1]). It must be > bc1. 
 - Neumann_at_bulk = Boolean. Whether or not applied Neumann boundary condition at V[L-1]. Overrides the Dirichlet 
   option for BC2_in_bulk.
 - sqrt_kgrid_numbers = Integer. Square root of the total number of kpoints in k-grid. The total 2D Brillouin zone 
   is spanned. It must be > 10.
 - k_shift = Float (list). 2D kgrid offset as follows: (k_x, k_y) + (k_shift[0], k_shift[1]).
 - temperature = Float. Temperature in K. Allowed range: [0.001, 315.0]
-- mixing_factor = Float. Mixing factor for the over-relaxation mixing method. Tipically 0.06-0.4.
+- mixing_factor = Float. Mixing factor for the over-relaxation mixing method. Tipically 0.05-0.4.
 - permittivity_model = String. Model used for relative permittivity as function of electric field E. Pre-defined 
   models are: 'Cop', 'Ang' and 'cte_N'. Alternatively, an expression as function of E in python syntax could be 
   introduced.
@@ -63,17 +62,20 @@ check the Matplotlib documentation at https://matplotlib.org/.
 
 - identifier = String. Identifier for the calculation.
 - path = String. Path in the BZ1 to perform the bandstructure calculation. Special points for (100) direction are G,X 
-  and M, for (110) direction are G,X,Y,S and for (111) direction are G,K,M.
+  and M, for (110) direction are G,X,Y,S and for (111) direction are G,K,M. For (001) direction in hexagonal systems, 
+  special points are G,K,M.
 - number_of_kpoints = Integer. Number of k-points along the path.
 - reference_kpoint = String. Special point used to set the 0 in k axis. Tipically "G" point.             
 - Total_Hk_method = String. Method by which total Hamiltonian is constructed. It can be either 'vectorized' or 'iterable'.
   'vectorized' option is suggested whenever it is possible.
-- num_bands = Integer. Number of bands to compute. It must be between 1 and 6*number_of_planes.
+- num_bands = Integer. Number of bands to compute. It must be between 1 and number_of_WFs*number_of_planes.
 - bands_task = Integer. Task to perform. Options are 0:'simple_bandstructure', 1:'orbital_character', 2:'plane_projection'
   and 3:'all'.
 - initial_plane = Integer. Initial plane from which the projection will start. Only used if bands_task == 2 or == 3.
 - final_plane = Integer. Upper limit for the projections. Planes involved will be (plane_init, plane_fin-1). Only used if 
   bands_task == 2 or == 3.
+- skip_bands = integer. Number of lower bands energy to skip in band structure calculation. Number of plotted bands will range 
+  from skip_bands to skip_bands + num_bands
 
 - ### TOTAL_BANDS:
 
@@ -201,7 +203,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 - batches = Integer. Number of batches to split the total k-points. K-points per batch will be 'sqrt_kgrid_numbers**2/batches'.
   In consequence, 'batches' has to be divisor of 'sqrt_kgrid_numbers**2', otherwise an error will arise.
 - energy_cut = Float. Energy in eV at which the slice is computed. 0.0 is the Fermi level.
-- outfile = String. Name of the output file. If 'default' it will be saved as 'identifier_ES.dat'
+- outfile = String. Name of the output file without extension. If 'default' it will be saved as 'identifier_ES.dat'
 
 
 
@@ -213,7 +215,7 @@ check the Matplotlib documentation at https://matplotlib.org/.
 ### ENERGY_PLOTTER:
            
 - identifier = String. Identifier to plot the energy slice.
-- input_file = String. Name of the input file. If 'default' it will load the deafault name 'identifier_ES.dat'.
+- input_file = String. Name of the input file without extension. If 'default' it will load the deafault name 'identifier_ES.dat'.
 - orbital_char = Boolean. Whether or not to plot including orbital character.
 - color_seq = String. Sequence of 3 colors as color1,color2,color3.  
 - energy_window = Float. Energy window. The points shown will range from (energy_cut-energy_window) to energy_cut.

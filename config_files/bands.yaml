@@ -11,25 +11,26 @@ BAND_STRUCTURE :
                    bands_task : 1
                    initial_plane : 0
                    final_plane : 5
-                   
+                   skip_bands : 0
+
                    TOTAL_BANDS :
                                        PLOT_ADJUST :
                                                        plotstyle : "default" 
                                                        xy_limits : &limxy [-0.5, 0.5, -0.33, 0.03]  #[x_min, x_max, y_min, y_max]  # The notation '&limxy' is to define repeated nodes
                                                        linecolor : "darkred"                                                                                                            # callable by '*limxy' in lines below. You can erase it
-                                                       linewidth : 1.5                                                                                                                  #  and set any list independently.
+                                                       linewidth : 1.5                                                                                                                        #  and set any list independently.
                                                        fig_size : [6,6]
-                                                       axis_adjust : [0.22, 0.15, 0.9, 0.9] #[left, bottom, right, top]
+                                                       axis_adjust : [0.22, 0.15, 0.9, 0.9]  #[left, bottom, right, top]
                                                        title : ""
                                                        title_size : 18
                                                        shadow_above_Ef : 0.0
                                                        shadow_color : 'w'
                                        LABELS : 
                                                        xlabel : 'K$_{//}$  [$\AA^{-1}$]'
-                                                       xfontsize : 20
+                                                       xfontsize : 18
                                                        ylabel : 'E-E$_{F}$ [eV]'
-                                                       yfontsize : 20
-                                                       ticksize : 16
+                                                       yfontsize : 18
+                                                       ticksize : 14
                                        SAVING : 
                                                        save_bands : no
                                                        save_plot : yes

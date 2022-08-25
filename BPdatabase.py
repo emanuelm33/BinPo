@@ -21,62 +21,91 @@
  
  DESCRIPTION:
      This module contains a dictionary with the available materials, for the time being.
-     You could add more items with different materials or different DFT treatments. 
-     The composition of each dictionary as item of materials main dictionary is:
-         
-         key = 'name of the perovskite complex oxide ABO3'.
-         values = { description : the formula and another info.
-                           DATA USED IN DFT CALCULATION
-                    XC-functional.
-                    pseudopotential_type.
-                           DATA OBTAINED FROM DFT CALCULATION
-                    lattice_parameter (Angs).
-                    lowest_unoccupied_level (eV).
-                           DATA FOR LOADING THE WANNIER FILE
-                    Wannier_file : name of the file.
-                    skip_rows : number of lines to skip when reading the 
-                    Wannier file.
-                 } 
-    NOTE : If you want to add a new item, make sure of using differents keys for the same material. For example,
-    to add a new item for SrTiO3 with different DFT XC-functional and/or pseudopotential,
-    name the key as 'STO1' or something like this. Otherwise you will obtain an error by 
-    repeating keys in the main dictionary 'materials'.
+     You could add more items for different systems (see ~/BPexamples/Adding_W90files.pdf).
+     
 """
 
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.0
-__date__ = "January 14, 2022"
+__version__ = 1.1
+__date__ = "August 9, 2022"
 
 
-materials = { 'STO' : {'description' : 'cubic SrTiO3',
-                       'XC-functional' : 'PBE',
-                       'pseudopotential_type' : 'PAW',
+materials = { 'STO' : {'description' : 'cubic SrTiO3, Ti t2g manifold',
+                       'pseudopotential' : 'PAW PBE full-relativistic from PSlibrary',
+                       'unit-cell' : 'cubic',
+                       'Wannier_functions_number' : 6,
                        'lattice_parameter' : 3.9425,
+                       'highest_occupied_level' : 9.6404,
                        'lowest_unoccupied_level' : 11.4685,
                        'Wannier_file' : 'STO_hr.dat',
-                       'skip_rows' : 0
+                       'skip_rows' : 228,
+                       'manifold' : 't2g',
                        },
-
-
-              'KTO' : { 'description' : 'cubic KTaO3',
-                        'XC-functional' : 'PBE',
-                        'pseudopotential_type' : 'PAW',
-                        'lattice_parameter' : 4.0184,
-                        'lowest_unoccupied_level' : 10.5168,
-                        'Wannier_file' : 'KTO_hr.dat',
-                        'skip_rows' : 0
+             
+             
+             'STOB' : {'description' : 'cubic SrTiO3, Ti t2g and O 2p manifolds',
+                       'pseudopotential' : 'PAW PBE full-relativistic from PSlibrary',
+                       'unit-cell' : 'cubic',
+                       'Wannier_functions_number' : 24,
+                       'lattice_parameter' : 3.9425,
+                       'highest_occupied_level' : 9.6404,
+                       'lowest_unoccupied_level' : 11.4685,
+                       'Wannier_file' : 'STOB_hr.dat',
+                       'skip_rows' : 228,
+                       'manifold' : 'other',
                        },
-
-              # Add here a new key : values item
-              # 'name' : { 'description' : ,
-              #           'XC-functional' : ,
-              #           'pseudopotential_type' : ,
-              #           'lattice_parameter' : ,
-              #           'lowest_unoccupied_level' : ,
-              #           'Wannier_file' : ,
-              #           'skip_rows' : 
+             
+             'STOC' : {'description' : 'cubic SrTiO3, Ti t2g and Ti eg manifolds',
+                       'pseudopotential' : 'PAW PBE full-relativistic from PSlibrary',
+                       'unit-cell' : 'cubic',
+                       'Wannier_functions_number' : 10,
+                       'lattice_parameter' : 3.9425,
+                       'highest_occupied_level' : 9.6404,
+                       'lowest_unoccupied_level' : 11.4685,
+                       'Wannier_file' : 'STOC_hr.dat',
+                       'skip_rows' : 228,
+                       'manifold' : 'other',
+                       },
+             
+              'KTO' : {'description' : 'cubic KTaO3, Ta t2g manifold',
+                       'pseudopotential' : 'NC PBE full-relativistic from Pseudo-Dojo',
+                       'unit-cell' : 'cubic',
+                       'Wannier_functions_number' : 6,
+                       'lattice_parameter' : 4.0184,
+                       'highest_occupied_level' : 8.4702,
+                       'lowest_unoccupied_level' : 10.5168,
+                       'Wannier_file' : 'KTO_hr.dat',
+                       'skip_rows' : 150,
+                       'manifold' : 't2g',
+                       },
+              
+              'BTB' : {'description' : 'hexagonal BiTeBr, conduction band manifold',
+                       'pseudopotential' : 'PAW PBE full-relativistic from PSlibrary',
+                       'unit-cell' : 'hexagonal',
+                       'Wannier_functions_number' : 6,
+                       'lattice_parameter' : 4.2662,
+                       'lattice_parameter_c' : 6.487,
+                       'highest_occupied_level' : 7.2121,
+                       'lowest_unoccupied_level' : 7.5174,
+                       'Wannier_file' : 'BTB_hr.dat',
+                       'skip_rows' : 576,
+                       'manifold' : 'other',
+                       },
+              
+                       
+              # 'name' : {'description' : 'Details of the system.',
+              #           'pseudopotential' : 'Details of the pseudopotential used in DFT calculations.',
+              #           'unit-cell' : 'Unit-cell symmetry (at present, 'cubic' or 'hexagonal').',
+              #           'Wannier_functions_number' : 'Number of WFs, it must match the number in the W90 file.',
+              #           'lattice_parameter' : 'Lattice parameter a for cubic or hexagonal cell in Angs.',
+              #           'lattice_parameter_c' : 'Lattice parameter c in Angs if the unit-cell is hexagonal.',
+              #           'highest_occupied_level' : 'Valence band maximum in eV.',
+              #           'lowest_unoccupied_level' : 'Conduction band minimum in eV.',
+              #           'Wannier_file' : 'Name for the W90 file with extension. Usually name_hr.dat.',
+              #           'skip_rows' : 'Number of rows to skip within the W90 file.',
+              #           'manifold' : 'Manifold of bands for the system. At present 't2g' or 'other'.',
               #          },
              }
 
@@ -98,7 +127,7 @@ if __name__ == "__main__":
     print('=========================================================================')
     print('\t DOCUMENTATION')
     print('=========================================================================')
-    print(help(__name__))    
+    print(help(__name__))  
     print('=========================================================================')
     print('=========================================================================')
 

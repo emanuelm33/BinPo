@@ -28,8 +28,8 @@
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.0
-__date__ = "January 14, 2022"
+__version__ = 1.1
+__date__ = "August 9, 2022"
 
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,7 +63,7 @@ print('---------------------------------------------------------------------')
 print('\n')
 print('BinPo, TB-Poisson Solver for 2DES\n'\
  'Copyright (C) 2021 BinPo Team\n\n'\
- 'BP-energy_plot.py is part of BinPo.\n\n'\
+ 'BP-fast_plot.py is part of BinPo.\n\n'\
  'BinPo is free software: you can redistribute it and/or modify\n'\
  'it under the terms of the GNU General Public License as published by\n'\
  'the Free Software Foundation, either version 3 of the License, or\n'\

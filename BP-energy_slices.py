@@ -22,14 +22,14 @@
  DESCRIPTION:
      ENERGY SLICES CALCULATION
      BP-energy_slices.py computes a constant energy plot of the 
-     bandstructure.
+     band structure.
 """
 
 __author__ = "Emanuel A. Martinez"
 __email__ = "emanuelm@ucm.es"
 __copyright__ = "Copyright (C) 2021 BinPo Team"
-__version__ = 1.0
-__date__ = "January 14, 2022"
+__version__ = 1.1
+__date__ = "August 9, 2022"
 
 import numpy as np
 import BPmodule as BPM
@@ -39,8 +39,7 @@ import argparse
 import yaml
 import scipy.linalg as LA
 import logging
-import matplotlib.pyplot as plt
-import sys
+import os
 
 # Loading the configuration files to set parameters not defined by terminal
 #--------------------------------------------------------------------------------------------------------------------------
@@ -83,7 +82,8 @@ with open(identifier + '/' + identifier + '.yaml', 'r') as f:
 # Loading the SC solution file
 TBP = np.loadtxt(identifier + '/' + identifier + '_SCP.dat')
 #--------------------------------------------------------------------------------------------------------------------------
-# Copying the rest of the parameters updatable by terminal
+# Copying the parameters updatable by terminal and loading
+# the remaining parameters from energy_slices.yaml
 Ecut = args.ec
 Nk = args.nk
 Nfr = args.ba
@@ -94,13 +94,17 @@ outfile = data['ENERGY_SLICES']['outfile']
 #--------------------------------------------------------------------------------------------------------------------------
 # Loading more parameters from the files
 L = params['number_of_planes'] # number of planes
-material = params['material']
+material = params['material'] # name of the material or system
 face = params['crystal_face'] # crystal face
-a0 = params['lattice_parameter'] # lattice parameter of cubic structure 
+a0 = params['lattice_parameter'] # lattice parameter of cubic or hexagonal structure
 T = params['temperature'] # temperature in K
-bc1 = params['BC1_topmost_layer']
-bc2 = params['BC2_in_bulk']
-ef = params['Fermi_level'] #Fermi level in eV as LUL + dE
+bc1 = params['BC1_topmost_layer'] # bc value for potential V at the top-most layer
+bc2 = params['BC2_in_bulk'] # bc value for V at the bottom-most layer
+ef = params['Fermi_level'] # Fermi level in eV as LUL + dE
+manifold = params['manifold'] # type of manifold
+NWANN = int(params['Wannier_functions_number']) # number of elements in the MLWF basis
+HOL = float(params['highest_occupied_level']) # highest occupied level (valence band maximum)
+sgeom = params['system_geometry'] # unit-cell symmetry
 #--------------------------------------------------------------------------------------------------------------------------
 # Creating a logger object for the current program
 log_path = identifier + '/' + identifier + '.log'
@@ -121,6 +125,31 @@ def printlog(text, level = 'i'): # Simple function for general logging
     if level == 'e':
         logger1.error(text)
         raise ValueError(text)  
+#--------------------------------------------------------------------------------------------------------------------------
+def ChangeBasisRot(xx,yy,fc):
+    """ Function to perform the change the basis + rotation algorithm
+    according to the confinement direction (fc)."""
+    if fc == '100': # the none element is to avoid error when unpacking the returned tuple
+        return xx,yy,None 
+    if fc == '110':
+        Rt = np.array([[1/np.sqrt(2),-1/np.sqrt(2),0.0], # rotation matrix
+                       [0.0,0.0,-1.0],
+                       [1/np.sqrt(2),1/np.sqrt(2),0.0]])
+        b1 = np.array([-0.5,0.5,0.0]) # reciprocal lattice vectors
+        b2 = np.array([0.0,0.0,1.0])
+        return np.dot(Rt,xx*b1+yy*b2)
+    if fc == '111':
+        Rt = np.array([[1/np.sqrt(2), -1/np.sqrt(2),0], # rotation matrix
+                       [1/np.sqrt(6), 1/np.sqrt(6), -2/np.sqrt(6)],
+                       [1/np.sqrt(3), 1/np.sqrt(3), 1/np.sqrt(3)]])
+        b1 = np.array([-1/3,-1/3,2/3]) # reciprocal lattice vectors
+        b2 = np.array([2/3,-1/3,-1/3])
+        return np.dot(Rt,xx*b1+yy*b2)
+    if fc == '001h':
+        b1 = np.array([1.0, 1/np.sqrt(3), 0.0]) # reciprocal lattice vectors
+        b2 = np.array([0.0, 2/np.sqrt(3), 0.0])
+        return xx*b1+yy*b2
+
 #--------------------------------------------------------------------------------------------------------------------------
 # MAIN    
 #####################################################################################
@@ -152,18 +181,12 @@ printlog('BinPo, TB-Poisson Solver for 2DES\n'\
  'GNU General Public License for more details.\n\n'\
  'You should have received a copy of the GNU General Public License\n'\
  'along with BinPo. See ~/COPYING file or <https://www.gnu.org/licenses/>.')
+
 if dk_x > 1.0 or dk_y > 1.0:
     printlog('The values for the k-grid shift exceeds the BZ1 periodicity!', label  = 'w')
-Kmesh = BPM.Kmeshgrid2(Nk, scale = kbox, delta_kx = dk_x, delta_ky = dk_y, a = a0) # Generation of kgrid
 
-# fig = plt.figure()
-# ax = fig.add_subplot(111)
-# ax.set_xlim(-0.7,0.7)
-# ax.set_ylim(-0.7,0.7)
-# ax.set_aspect('equal')
-# ax.scatter(x = Kmesh.T[0], y = Kmesh.T[1])
-# plt.show()
-# sys.exit()
+# Generation of k-grid    
+Kmesh = BPM.Kmeshgrid2(Nk, scale = kbox, delta_kx = dk_x, delta_ky = dk_y, a = a0) 
 
 now = dt.datetime.now()
 printlog('\n')
@@ -189,79 +212,69 @@ else:
 printlog('\n')
 
 start = t.time() # general time reference
-
+#--------------------------------------------------------------------------------------
+# files loading and Wannier separation
 printlog('Loading files...')
-Z_7 = np.loadtxt('./Hr' + material + face + '/Z_7.dat')
-Z_6 = np.loadtxt('./Hr' + material + face + '/Z_6.dat')
-Z_5 = np.loadtxt('./Hr' + material + face + '/Z_5.dat')
-Z_4 = np.loadtxt('./Hr' + material + face + '/Z_4.dat')
-Z_3 = np.loadtxt('./Hr' + material + face + '/Z_3.dat')
-Z_2 = np.loadtxt('./Hr' + material + face + '/Z_2.dat')
-Z_1 = np.loadtxt('./Hr' + material + face + '/Z_1.dat')
-Z0 = np.loadtxt('./Hr' + material + face + '/Z0.dat')
-    
-D_7 = BPM.Wann_Sep(Z_7)    
-D_6 = BPM.Wann_Sep(Z_6)
-D_5 = BPM.Wann_Sep(Z_5)
-D_4 = BPM.Wann_Sep(Z_4)
-D_3 = BPM.Wann_Sep(Z_3)
-D_2 = BPM.Wann_Sep(Z_2)
-D_1 = BPM.Wann_Sep(Z_1)
-D0 = BPM.Wann_Sep(Z0)
- 
-Kgrid = np.split(Kmesh,Nfr)
-    
-V = BPM.PotentialEnergy(L, bc1, BC2 = bc2)
-V.update_potential(TBP.T[1])
+DD  = {} # dictionary to save the r-space Hamiltonian elements separated by planes
+for z in os.listdir('./Hr' + material + face):
+    Z = np.loadtxt('./Hr' + material + face + '/' + z)
+    DD[z.split('.')[0]] = BPM.Wann_Sep(Z, NWANN)
+#--------------------------------------------------------------------------------------
+Kgrid = np.split(Kmesh,Nfr) # here, the coarse k-grid is split into Nfr batches of size Nk**2/Nfr
+                            # in order to reduce the computational cost
+V = BPM.PotentialEnergy(L, bc1, BC2 = bc2) # initializing potential instance
+V.update_potential(TBP.T[1]) # updating the potential instance with the SC potential values
 printlog('Constructing Hv tensor...')
-HV = V.to_tensor(int(Nk**2/Nfr))
+HV = V.to_tensor(tensor_size = int(Nk**2/Nfr), nwann= NWANN) # creating a potential energy tensor
 printlog('Done!')
 printlog('\n')
 printlog("------------------------------------------------------------------------")
     
-L0 = []# to save the data
-    
-for i in range(Nfr):
+L0 = [] # auxiliary list to save the data
+   
+for i in range(Nfr): # main loop in which the energy slice is computed batch by batch 
     printlog('BATCH #'+str(i+1))
     printlog('\n')
     printlog('Hopping calculation and tensors construction...')
     t0 = t.time()
+    DDT = {} # dictionary to save the k-space Hamiltonian elements
+    for key, val in DD.items(): # creating empty list inside DDT to set the size
+                DDT['T_' + key] = []
+
+    for key, val in DD.items(): # filling DDT with the 2D Fourier transformed Hamiltonian elements
+                DDT['T_' + key] = BPM.Hopping2D(Kgrid[i], val)
     
-    T_7 = BPM.Hopping2D(Kgrid[i], D_7)    
-    T_6 = BPM.Hopping2D(Kgrid[i], D_6)
-    T_5 = BPM.Hopping2D(Kgrid[i], D_5)
-    T_4 = BPM.Hopping2D(Kgrid[i], D_4)
-    T_3 = BPM.Hopping2D(Kgrid[i], D_3)
-    T_2 = BPM.Hopping2D(Kgrid[i], D_2)
-    T_1 = BPM.Hopping2D(Kgrid[i], D_1)
-    T0 = BPM.Hopping2D(Kgrid[i], D0)
-        
-    printlog("Transforming <0w|H|Rw'> to k-space...")    
-    BPM.Quasi2DHamiltonian.set_parameters(T,ef,len(Kgrid[i]))
-    H = BPM.Quasi2DHamiltonian(T_7, T_6, T_5, T_4, T_3, T_2, T_1, T0, L)
-    
-    HK = H.HamiltonianTensor()
+    H = BPM.Quasi2DHamiltonian(DDT, L, NWANN) # initializing the Quasi2D Hamiltonian instance
+    BPM.Quasi2DHamiltonian.set_parameters(T, ef, len(Kgrid[i]), HOL) # number of k-points is now the contained in each batch
+    HK = H.HamiltonianTensor(NWANN) # creating a Hamiltonian tensor
     printlog('Done!')
-    printlog('Time spent: '+"{:.2f}".format(t.time()-t0) + '  seg')
-    printlog('\n')
-        
+    printlog('Time spent: ' + "{:.2f}".format(t.time()-t0) + ' seg')
+    printlog('\n')      
     printlog('Diagonalizating the Hamiltonian tensor')
-    t0 = t.time()
     
+    # It tries to use scipy routine, which is faster. Otherwise, numpy routine will be used.
     try:
-        for j in range(len(Kgrid[i])):
+        for j in range(len(Kgrid[i])): 
+            # for each k-point in the current batch, the corresponding tensor elements
+            # are added and diagonalizing to solve the eigenvalue and eigenvector problem
+            # note that the subset of eigenvalues during diagonalization is constrained to the 
+            # energy window (wec) under the Ecut. Modify in subset_by_value option the position 
+            # of wec respect to the Ecut if you want it above Ecut or with Ecut in the middle of the window.
             HT = HK[j] + HV[j]
             w, v = LA.eigh(HT, lower = True, overwrite_a = True, subset_by_value = (Ecut + ef - wec, Ecut + ef))
             
             x = (Kgrid[i]).T[0][j]
             y = (Kgrid[i]).T[1][j]
-                                             
-            if len(w) != 0:
-                Cxy = BPM.orb_char(v[:,len(w)-1], 'xy', L)
-                Cyz = BPM.orb_char(v[:,len(w)-1], 'yz', L)
-                Czx = BPM.orb_char(v[:,len(w)-1], 'zx', L)
-                
-                L0.append([x,y,w[len(w)-1],Cxy,Cyz,Czx])
+            # just if there are eigenvalues within the defined range they will be saved                                 
+            if len(w) != 0: # and the eigenvectors will be used to compute the orbital character
+                Cxy = BPM.orb_char(v[:,len(w)-1], 'xy', L) # this calculation does not represent a heavy load
+                Cyz = BPM.orb_char(v[:,len(w)-1], 'yz', L) # however, at present it makes sense with a t2g manifold
+                Czx = BPM.orb_char(v[:,len(w)-1], 'zx', L) 
+                #----------------------------------------------------------------
+                # Applying the change of basis + rotation algorithm
+                xx, yy, _ = ChangeBasisRot(x,y,face)
+                #----------------------------------------------------------------
+                L0.append([xx,yy,w[len(w)-1],Cxy,Cyz,Czx]) # appending the values of kx, ky, E and projections
     except:
         for j in range(len(Kgrid[i])):
             HT = HK[j] + HV[j]
@@ -269,11 +282,11 @@ for i in range(Nfr):
     
             x = (Kgrid[i]).T[0][j]
             y = (Kgrid[i]).T[1][j]
-                                 
+            # the eigenvalues are filtered after solving the entire diagonalization in this case                     
             Ev = np.max(np.where((w-ef) < Ecut,(w-ef),-1))
             index = np.where((w-ef) == Ev)
             
-            if index[0].size > 0:
+            if index[0].size > 0: # this part is a little modified but it does the same as above
                 Cxy = 0.0
                 Cyz = 0.0
                 Czx = 0.0
@@ -281,20 +294,27 @@ for i in range(Nfr):
                     Cxy += BPM.orb_char(v[ :,int(indices)], 'xy', L)
                     Cyz += BPM.orb_char(v[ :,int(indices)], 'yz', L)
                     Czx += BPM.orb_char(v[ :,int(indices)], 'zx', L)
-                L0.append([x,y,Ev,Cxy,Cyz,Czx])
+                    #----------------------------------------------------------------
+                    # Applying the change of basis + rotation algorithm
+                    xx, yy, _ = ChangeBasisRot(x,y,face)
+                    #----------------------------------------------------------------                    
+                L0.append([x,y,Ev,Cxy,Cyz,Czx]) # appending the values of kx, ky, E and projections
+                
         printlog('NumPy routine was executed by exception!')        
     
     printlog('\n')
     printlog('Time spent to now: '+"{:.2f}".format(t.time()-start) + '  seg')    
     printlog("------------------------------------------------------------------------")
     
-
 printlog('\n')
 printlog('Saving file...')
 if outfile == 'default':
     np.savetxt(identifier + '/' + identifier + '_ES.dat', np.array(L0))
 else:
     np.savetxt(identifier + '/' + outfile + '.dat', np.array(L0))
+    
+L0.clear() # cleaning the auxiliary list
+
 end = t.time()
 printlog('\n')
 printlog('Total time spent: '+"{:.2f}".format(end-start) + '  seg') 
