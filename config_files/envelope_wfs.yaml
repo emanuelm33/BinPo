@@ -1,0 +1,34 @@
+# Input file for 'BP-envelope_wfs.py' component
+#==================INPUT=========================
+---
+ENVELOPE_WAVEFUNCTIONS:
+                   identifier : "sto_01"
+                   intensity_factor : 0.35                   
+                   number_of_wavefunctions : 8
+                   PLOT_ADJUST :
+                                       plotstyle : 'bmh'
+                                       linewidth_wfs : 2.5
+                                       linewidth_V : 1.8
+                                       markersize : 8
+                                       axis_adjust : [0.15, 0.15, 0.94, 0.9] #[left, bottom, right, top]
+                                       fig_size : [8,6]
+                                       color_V : "k"
+                                       color_wfs : "teal"
+                                       alpha : 0.4
+                                       title : "Envelope wavefunctions"
+                                       title_size : 16
+                   LABELS :
+                                       xlabel : 'Planes'
+                                       xfontsize : 18
+                                       ylabel : 'Energy [eV]'
+                                       yfontsize : 18
+                                       ticksize : 16
+                                       legends : yes
+                                       legend_size : 14
+                   SAVING :
+                                       save_data : no
+                                       save_plot : yes
+                                       format : ".png"
+                                       dpi : 300
+...
+

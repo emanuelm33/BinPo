@@ -1,0 +1,33 @@
+# Input file for 'BP-orb_density.py' component
+#==================INPUT=========================
+---
+DENSITY_ANALYSIS :
+                   identifier : "sto_01"
+                   sqrt_kgrid_numbers : 25
+                   k_shift : [0.0, 0.0]
+                   PLOT_ADJUST :
+                                       plotstyle : 'bmh'
+                                       linewidth : 1.7
+                                       markersize : 8
+                                       axis_adjust : [0.2, 0.15, 0.94, 0.9] #[left, bottom, right, top]
+                                       fig_size : [8,6]
+                                       color_seq : k,r,lime,b
+                                       fill_curves : yes
+                                       alpha : 0.25
+                                       title : "Orbital decomposition of electron density"
+                                       title_size : 16
+                   LABELS :
+                                       xlabel : 'Planes'
+                                       xfontsize : 18
+                                       ylabel : 'Electron density [elecs./plane]'
+                                       yfontsize : 18
+                                       ticksize : 16
+                                       legends : yes
+                                       legend_size : 16
+                   SAVING :
+                                       save_data : no
+                                       save_plot : yes
+                                       format : ".png"
+                                       dpi : 300
+...
+

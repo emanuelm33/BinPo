@@ -1,0 +1,35 @@
+# Input file for 'BP-energy_plot.py' component
+#==================INPUT=========================
+---
+ENERGY_PLOTTER :
+                   identifier : "ktoC_3"
+                   input_file : "default"
+                   orbital_char : yes
+                   color_seq : red,lime,blue
+                   energy_window : 0.003
+                   
+                   PLOT_ADJUST :
+                                       plotstyle : 'default'
+                                       point_size : 0.2
+                                       xy_limits : [-0.27, 0.27, -0.27, 0.27] #[x_min, x_max, y_min, y_max]
+                                       fig_size : [6,6]
+                                       axis_adjust : [0.2, 0.15, 0.9, 0.9] #[left, bottom, right, top]
+                                       title : ""
+                                       title_size : 12
+                   LABELS :
+                                       xlabel : '$k_x$  ($\AA^{-1}$) [$\bar{1}$10]'
+                                       xfontsize : 18
+                                       ylabel : '$k_y$  ($\AA^{-1}$) [001]'
+                                       yfontsize : 18
+                                       ticksize : 17
+                   COLOR_TRIANGLE:
+                                       proportion : '35%'
+                                       location : 4
+                                       padding : 0.5
+                                       fontsize : 16
+                   SAVING :
+                                       save_plot : yes
+                                       format : ".png"
+                                       dpi : 300                                       
+...                                       
+
