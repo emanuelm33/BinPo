@@ -76,7 +76,7 @@ Request for adding features will be welcomed but without guarantees of future im
                    examples in our main manuscript. Also a stepwise guide to add new W90 files can be found.
 
 * _config_files_:    This folder contains the configuration files _.yaml_ for the _BinPo_ components, named as _BP-components.py_.
-                     For each component, except for _BP_preproc.py_ and _BP_fast-plot.py_, there is an associated _component.yaml_ 
+                     For each component (except for _BP_preproc.py_ and _BP_fast-plot.py_), there is an associated _component.yaml_ 
 					 configuration file, where the values not set by terminal are taken from. Besides, in this folder there is a 
 					 _help_config.md_ file which explains the meaning of all parameters in the _.yaml_ files.
 
@@ -133,7 +133,7 @@ look at _~/BPexamples_.
 
 ###    STEP 1: pre-processing step:
 
-Run "BP-preproc.py". This component has two mandatory arguments: material (mt) and confinement direction (cfd). Choose the combination you want,
+Run _BP-preproc.py_. This component has two mandatory arguments: material (mt) and confinement direction (cfd). Choose the combination you want,
 for example, STO and 111, as follows:
 
 	$ python BP-preproc.py -mt STO -cfd 111
@@ -154,7 +154,7 @@ Run _BP-scp.py_ component with a defined job identifier (_id_) as:
 	$ python BP-scp.py -id identifier -mt STO -cfd 111
 	
 In this simplified example, many other parameters are being ignored. These will be taken from _~/conf_files/scp.yaml file_. 
-The identifier will be unique for this calculation and can be recall later in any post-processing steps. After a successfull SC calculation,
+The identifier will be unique for this calculation and can be recall later in any post-processing steps. After a successful SC calculation,
 you will obtain an output folder holding the SC solution, a _.log_ file and a _.yaml_ file with a dictionary of parameters used in the 
 calculation. You can quickly check the output file by means of _BP-fast_plot.py_ as:
      
