@@ -75,14 +75,13 @@ Request for adding features will be welcomed but without guarantees of future im
 * _BPexamples_:      This folder contains _.pdf_ files with detailed descriptions about the calculation presented as 
                    examples in our main manuscript. Also a stepwise guide to add new W90 files can be found.
 
-* _config_files_:    This folder contains the configuration files _.yaml_ for the _BinPo_ components. Except for _BP-preproc.py_
-		   and _BP-fast_plot.py_ components (which not require a configuration file), each of the _BinPo_ components, named
-		   as _BP-components.py_, has an associated _component.yaml_ configuration file, where by default the values not set 
-		   by terminal are taken from. Besides, in this folder there is a _help_config.md_ file which explains the meaning of
-		   all parameters in the _.yaml_ files.
+* _config_files_:    This folder contains the configuration files _.yaml_ for the _BinPo_ components, named as _BP-components.py_.
+                     For each component, except for _BP_preproc.py_ and _BP_fast-plot.py_, there is an associated _component.yaml_ 
+					 configuration file, where the values not set by terminal are taken from. Besides, in this folder there is a 
+					 _help_config.md_ file which explains the meaning of all parameters in the _.yaml_ files.
 
 * _BP-preproc.py_:   Pre-processing component. It performs the tasks of filtering and rearrangement from the initial
-                   Wannier files.
+                   Wannier files. 
 
 * _BPmodule.py_:     This file is the main module and contains classes, methods an attributes.
                    It is only called by others programs, the file itself does not need to be executed.	
