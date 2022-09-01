@@ -5,7 +5,7 @@
 
 _BinPo_ is a Python code to compute the electronic band structure and other properties in 2D electron
 systems (2DESs). At present, it could be used in cubic and hexagonal systems. For the cubic case, it is possible
-to analize the main confinement directions. There is an especial focus in the 2DESs with _t2g_ manifold, like in STO or KTO,
+to analize the main confinement directions. There is an especial focus in the 2DESs with _t2g_ manifold, like in SrTiO3 (STO) or KTaO3 (KTO),
 due to their increasing impact in complex oxide community. So that, in that cases further capabilities are available.
 _BinPo_ solves the Schrödinger-Poisson scheme to obtain the self-consistent potential energy along the slab. The 
 tight-binding Hamiltonian for this slab is created from the transfer integrals in the Maximally Localized Wannier
@@ -75,8 +75,11 @@ Request for adding features will be welcomed but without guarantees of future im
 * _BPexamples_:      This folder contains _.pdf_ files with detailed descriptions about the calculation presented as 
                    examples in our main manuscript. Also a stepwise guide to add new W90 files can be found.
 
-* _config_files_:    This folder contains the configuration files .yaml for each component of _BinPo_. Besides, there
-                   is a _help_config.md_ file which explains the meaning of all parameters.
+* _config_files_:    This folder contains the configuration files _.yaml_ for the _BinPo_ components. Except for _BP-preproc.py_
+		   and _BP-fast_plot.py_ components (which not require a configuration file), each of the _BinPo_ components, named
+		   as _BP-components.py_, has an associated _component.yaml_ configuration file, where by default the values not set 
+		   by terminal are taken from. Besides, in this folder there is a _help_config.md_ file which explains the meaning of
+		   all parameters in the _.yaml_ files.
 
 * _BP-preproc.py_:   Pre-processing component. It performs the tasks of filtering and rearrangement from the initial
                    Wannier files.
@@ -89,35 +92,29 @@ Request for adding features will be welcomed but without guarantees of future im
                    it is imported by other programs and the information is obtained through the 'material' keyword.
 		
 * _BP-scp.py_:       Component for calculation of the SC potential energy along the slab (SC-potential).
-                   Parameters not passed through the terminal are set by default from _~/conf_files/scp.yaml_.
-				
+ 				
 * _BP-fast_plot.py_: Quick plotter for the output of _BP-scp.py_.
 
 * _BP-bands.py_:     Band structure calculator component. Bands calculation can include projections onto planes. For the 
 		   particular case of _t2g_ 2DESs, projections onto the orbital character is also available.
                    You can pass the identifier for band calculation by terminal, and many other parameters.
-                   Parameters not set will be taken from _~/conf_files/bands.yaml_.
-
+ 
 * _BP-energy_slices.py_:  
 		   Energy slices calculator component. The calculation can include orbital character for _t2g_ 2DESs.
-		   You can pass the identifier for slice calculation by terminal, and many other parameters. Parameters
-		   not set will be taken form _~/conf_files/energy_slices.yaml_. At the end, the file is automatically saved 
-		   for plotting.
+		   You can pass the identifier for slice calculation by terminal, and many other parameters. At the end,
+		   the file is automatically saved for plotting.
 
 * _BP-energy_plot.py_:
-      		   Energy slices plotter component. Plot the output of _BP-energy_slices.py_. Parameters not passed through 
-	           the terminal will be set by default from _~/conf_files/energy_plot.yaml_.
+      		   Energy slices plotter component. Plot the output of _BP-energy_slices.py_.
 
 * _BP-envelope_wfs.py_: 
 	           At present, it is just available for _t2g_ 2DESs. Envelope wavefunctions calculator at gamma point.
-	           It allows for obtaining and visualizing the envelope wavefunctions around the gamma point. Parameters
-	           not passed through the terminal will be set by default from _~/conf_files/envelope_wfs.yaml_.
+	           It allows for obtaining and visualizing the envelope wavefunctions around the gamma point.
 
 * _BP-orb_density.py_: 
 	           At present, it is just available for _t2g_ 2DESs. Orbital decomposition of electron density.
 	           It allows for decomposing and plotting the electron density according to the orbital character.
-	           Parameters not passed through the terminal will be set by default from _~/conf_files/orb_density.yaml_.
-
+ 
 * _COPYING.md_:      GPLv3 license file.
 
 * _README.md_:       This file.
@@ -155,10 +152,10 @@ filtering of r-space Hamiltonian, discretized along normal direction according t
 		
 Run _BP-scp.py_ component with a defined job identifier (_id_) as: 
 
-	$ python BP-scp.py -id identifier
+	$ python BP-scp.py -id identifier -mt STO -cfd 111
 	
 In this simplified example, many other parameters are being ignored. These will be taken from _~/conf_files/scp.yaml file_. 
-The identifier will be unique for this calculation and can be recall later in any post-processing steps. If the calculation converges
+The identifier will be unique for this calculation and can be recall later in any post-processing steps. After a successfull SC calculation,
 you will obtain an output folder holding the SC solution, a _.log_ file and a _.yaml_ file with a dictionary of parameters used in the 
 calculation. You can quickly check the output file by means of _BP-fast_plot.py_ as:
      
@@ -178,7 +175,7 @@ the ommited parameters will be taken from _~/conf_files/bands.yaml_ file.
 
 ### Further information:
 
-* For learning about the differents option to edit plots (colors, colormaps, formats, etc.), check the Matplotlib documentation
+* For learning about the different options to edit plots (colors, colormaps, formats, etc.), check the Matplotlib documentation
   at https://matplotlib.org/.
 * For general information about .yaml files, visit https://yaml.org/.
 
